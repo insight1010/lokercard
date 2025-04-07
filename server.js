@@ -486,57 +486,15 @@ app.post('/api/sessions/:sessionId/finish', (req, res) => {
   storage.saveData(sessions, users);
 });
 
-// Пропуск хода (только для организатора)
+// Пропуск хода текущего игрока (только для хоста)
 app.post('/api/sessions/:sessionId/skip-turn', (req, res) => {
-    const { sessionId } = req.params;
-    const { userId } = req.body;
-    
-    if (!sessions[sessionId]) {
-        return res.status(404).json({ error: 'Сессия не найдена' });
-    }
-    
-    const session = sessions[sessionId];
-    const user = session.users.find(u => u.id === userId);
-    
-    if (!user || !user.isHost) {
-        return res.status(403).json({ error: 'Только организатор может пропустить ход' });
-    }
-    
-    if (session.status !== 'started') {
-        return res.status(400).json({ error: 'Сессия не начата или уже завершена' });
-    }
-    
-    const skippedUserId = session.currentTurnUserId;
-    const skippedUser = session.users.find(u => u.id === skippedUserId);
-    
-    // Переходим к следующему игроку
-    const nextTurnUserId = moveToNextPlayer(session);
-    
-    // Уведомляем всех участников о пропуске хода
-    io.to(sessionId).emit('turnSkipped', {
-        skippedUserId,
-        skippedUserName: skippedUser ? skippedUser.name : 'Неизвестный пользователь',
-        nextTurnUserId: session.currentTurnUserId,
-        timestamp: new Date().toISOString()
-    });
-    
-    // Отправляем обновленные данные сессии всем участникам
-    io.to(sessionId).emit('sessionUpdated', session);
-    
-    res.status(200).json({ 
-        success: true,
-        nextTurnUserId: session.currentTurnUserId
-    });
-
-    storage.saveData(sessions, users);
-});
-
-// API для раздачи дополнительных карт - исправленная версия
-app.post('/api/sessions/:sessionId/deal-more-cards', (req, res) => {
   const { sessionId } = req.params;
   const { userId } = req.body;
   
+  console.log(`Запрос на пропуск хода в сессии ${sessionId} от пользователя ${userId}`);
+  
   if (!sessions[sessionId]) {
+    console.log(`Сессия ${sessionId} не найдена`);
     return res.status(404).json({ error: 'Сессия не найдена' });
   }
   
@@ -544,171 +502,161 @@ app.post('/api/sessions/:sessionId/deal-more-cards', (req, res) => {
   const user = session.users.find(u => u.id === userId);
   
   if (!user || !user.isHost) {
-    return res.status(403).json({ error: 'Только организатор может раздать дополнительные карты' });
+    console.log(`Только организатор может пропустить ход`);
+    return res.status(403).json({ error: 'Только организатор может пропустить ход' });
   }
   
   if (session.status !== 'started') {
+    console.log(`Сессия не в состоянии "started"`);
     return res.status(400).json({ error: 'Сессия не начата или уже завершена' });
   }
   
-  // Получаем все карты из исходного набора
-  const allCards = {
-    ownership: [
-      { id: 'ownership-1', category: 'ownership', question: 'Как оценим бизнес, если один захочет выйти завтра?', 
-        comment: '<p>Определите формулу оценки бизнеса и согласуйте сроки выплат при выходе партнёра. Это позволит избежать конфликтов в критический момент. Результат: прозрачный механизм оценки и сроки расчетов с выходящим партнёром.</p>' },
-      { id: 'ownership-2', category: 'ownership', question: 'Пустим ли жену/брата в совет директоров?', 
-        comment: '<p>Обсудите принципы включения родственников в управление компанией. Рассмотрите риски эмоциональных решений, конфликта интересов и возможные последствия семейных споров для бизнеса. Результат: четкая политика участия родственников в управлении.</p>' },
-      // Другие карты со-владения
-      { id: 'ownership-3', category: 'ownership', question: 'Будем платить дивиденды или реинвестировать?', 
-        comment: '<p>Согласуйте политику распределения прибыли между реинвестированием и выплатой дивидендов. Обсудите процент выплат, периодичность и механизм принятия решений в этом вопросе. Результат: прозрачная финансовая политика, учитывающая интересы всех партнёров.</p>' },
-      { id: 'ownership-4', category: 'ownership', question: 'Как делить доли, если я вложу в 2 раза больше?', 
-        comment: '<p>Разработайте формулу перераспределения долей в случае диспропорциональных инвестиций. Учтите как денежные вложения, так и ценность других вкладов (время, экспертиза, связи). Результат: справедливая модель корректировки долей при неравных вложениях.</p>' },
-      { id: 'ownership-5', category: 'ownership', question: 'Продадим ли долю китайским инвесторам?', 
-        comment: '<p>Обсудите принципы привлечения иностранных инвесторов и возможные ограничения. Определите приемлемые лимиты отчуждения долей и последствия нарушения договоренностей. Результат: согласованная стратегия взаимодействия с иностранным капиталом.</p>' }
-    ],
-    values: [
-      { id: 'values-1', category: 'values', question: 'Можно ли совмещать с конкурентом?', 
-        comment: '<p>Обсудите возможность сотрудничества с конкурирующими компаниями. Определите границы допустимого взаимодействия, условия информирования партнёров и возможные санкции за нарушение договоренностей. Результат: четкая политика взаимодействия с конкурентами.</p>' },
-      { id: 'values-2', category: 'values', question: 'Будем скрывать убытки от семьи?', 
-        comment: '<p>Определите политику прозрачности финансовых результатов компании для семей партнёров. Обсудите частоту и формат отчетности, границы конфиденциальности. Результат: согласованный подход к коммуникации финансового положения бизнеса в семье.</p>' },
-      // Другие карты ценностей
-      { id: 'values-3', category: 'values', question: 'Ваш личный потолок по долгам бизнеса?', 
-        comment: '<p>Определите максимальную сумму личной ответственности каждого партнёра по обязательствам бизнеса. Это важное решение поможет установить границы финансового риска и психологический комфорт. Результат: четкие лимиты финансовой ответственности для каждого участника.</p>' },
-      { id: 'values-4', category: 'values', question: 'Допустимо ли давать взятки для сделок?', 
-        comment: '<p>Обсудите этические границы в переговорах с контрагентами и представителями власти. Определите, что является неприемлемым в вопросах коррупции, и какие последствия ждут того, кто нарушит договоренности. Результат: этический кодекс компании в вопросах взаимодействия с внешней средой.</p>' },
-      { id: 'values-5', category: 'values', question: 'Можно ли публично критиковать партнёра?', 
-        comment: '<p>Обсудите допустимость и формат публичной критики партнёров. Определите каналы и способы коммуникации разногласий, а также последствия за нарушение этических норм. Результат: политика внешних коммуникаций, защищающая репутацию компании и партнёров.</p>' }
-    ],
-    scenarios: [
-      { id: 'scenarios-1', category: 'scenarios', question: 'Если хакеры украдут все данные?', 
-        comment: '<p>Разработайте протокол реагирования на утечку данных. Определите ответственных лиц, процедуру уведомления клиентов, механизмы компенсации ущерба и меры по восстановлению репутации. Результат: готовность к управлению киберкризисом с минимальными потерями.</p>' },
-      { id: 'scenarios-2', category: 'scenarios', question: 'Если налоговая заблокирует счета?', 
-        comment: '<p>Согласуйте план действий на случай блокировки корпоративных счетов. Определите альтернативные источники финансирования, расставьте приоритеты платежей и распределите ответственность за разблокировку. Результат: готовность к временному функционированию в условиях ограниченного доступа к финансам.</p>' },
-      // Другие карты сценариев
-      { id: 'scenarios-3', category: 'scenarios', question: 'Если один из нас влюбится в сотрудника?', 
-        comment: '<p>Определите политику в отношении личных связей партнёров с сотрудниками компании. Рассмотрите варианты — от полного запрета до регламентации с обязательным информированием других партнёров. Результат: правила, минимизирующие риски конфликта интересов и негативного влияния на коллектив.</p>' },
-      { id: 'scenarios-4', category: 'scenarios', question: 'Если рынок рухнет из-за кризиса?', 
-        comment: '<p>Разработайте антикризисную стратегию для компании. Определите критерии принятия решений о сокращении персонала, изменении бизнес-модели или переходе в другие ниши. Результат: план действий, позволяющий сохранить ядро бизнеса в условиях экономического спада.</p>' },
-      { id: 'scenarios-5', category: 'scenarios', question: 'Если партнёр присвоит деньги компании?', 
-        comment: '<p>Согласуйте процедуру действий в случае выявления факта присвоения средств компании. Определите пороговые суммы для разных уровней реагирования, возможность выкупа доли нарушителя и критерии для обращения в правоохранительные органы. Результат: механизм защиты от финансовых злоупотреблений.</p>' }
-    ],
-    management: [
-      { id: 'management-1', category: 'management', question: 'Кто отвечает за увольнение сотрудников?', 
-        comment: '<p>Определите процедуру и ответственных за принятие решений об увольнении сотрудников разного уровня. Согласуйте необходимость согласования таких решений с партнёрами и процесс коммуникации с командой. Результат: справедливая и предсказуемая система кадровых решений.</p>' },
-      { id: 'management-2', category: 'management', question: 'Как часто будем проводить планерки?', 
-        comment: '<p>Определите оптимальную частоту, формат и продолжительность регулярных встреч управленческой команды. Согласуйте обязательность участия, процедуру подготовки и правила фиксации решений. Результат: эффективная система координации управленческих действий.</p>' },
-      // Другие карты управления
-      { id: 'management-3', category: 'management', question: 'Можно ли менять KPI в середине квартала?', 
-        comment: '<p>Согласуйте политику изменения ключевых показателей эффективности в течение отчетного периода. Определите исключительные обстоятельства, процедуру согласования и компенсации за "изменение правил игры". Результат: стабильная и мотивирующая система оценки результатов.</p>' },
-      { id: 'management-4', category: 'management', question: 'Кто подписывает договоры с поставщиками?', 
-        comment: '<p>Определите круг лиц, имеющих право подписи договоров с поставщиками разного уровня значимости. Согласуйте лимиты самостоятельных решений и процедуру эскалации для крупных или стратегических контрактов. Результат: эффективный баланс между оперативностью и контролем.</p>' },
-      { id: 'management-5', category: 'management', question: 'Как делить премии среди топ-менеджеров?', 
-        comment: '<p>Разработайте прозрачную формулу распределения премиального фонда между руководителями высшего звена. Определите баланс между индивидуальными и командными результатами, а также условия лишения премии. Результат: справедливая система мотивации управленческой команды.</p>' }
-    ],
-    empty: [
-      { id: 'empty-1', category: 'empty', question: 'Какой главный вопрос остался необсужденным?', 
-        comment: '<p>Используйте этот момент, чтобы поднять важный вопрос, который ещё не обсуждался. Сформулируйте его четко и объясните, почему он критически важен для успеха предприятия. Результат: выявление и обсуждение "слепых зон" в планировании.</p>' },
-      { id: 'empty-2', category: 'empty', question: 'Какой опыт предыдущих проектов стоит учесть в текущем?', 
-        comment: '<p>Поделитесь релевантным опытом из предыдущих проектов — как успешным, так и неудачным. Обсудите уроки, которые можно применить в текущем проекте. Результат: практические выводы, которые помогут избежать повторения ошибок и усилить успешные практики.</p>' },
-      // Другие пустые карты
-      { id: 'empty-3', category: 'empty', question: 'Какая общая цель объединяет всех партнёров?', 
-        comment: '<p>Обсудите глубинные мотивы, ценности и цели, которые объединяют всех партнёров в этом бизнесе. Важно выявить действительно общие устремления, а не просто декларируемые. Результат: ясное понимание общего фундамента партнёрства.</p>' },
-      { id: 'empty-4', category: 'empty', question: 'Что для вас служит главной мотивацией в бизнесе?', 
-        comment: '<p>Откровенно поделитесь вашими главными драйверами в бизнесе — деньги, статус, свобода, самореализация, влияние или что-то другое. Понимание истинных мотивов друг друга поможет выстроить гармоничные отношения. Результат: осознание личных приоритетов каждого партнёра.</p>' },
-      { id: 'empty-5', category: 'empty', question: 'Какие личные страхи влияют на ваши бизнес-решения?', 
-        comment: '<p>Обсудите личные страхи и опасения, которые могут неосознанно влиять на принимаемые бизнес-решения. Признание этих факторов поможет принимать более объективные и взвешенные решения. Результат: снижение влияния эмоциональных триггеров на стратегические решения.</p>' }
-    ]
-  };
+  // Получаем текущего игрока (чей ход пропускается)
+  const currentPlayerIndex = session.userOrder.findIndex(id => id === session.currentTurnUserId);
+  const skippedUserId = session.currentTurnUserId;
+  const skippedUser = session.users.find(u => u.id === skippedUserId);
   
-  // Перемешиваем все карты каждой категории
-  Object.keys(allCards).forEach(category => {
-    allCards[category] = shuffleArray([...allCards[category]]);
-  });
-  
-  // Получаем все карты, которые уже были розданы или использованы
-  const usedCardIds = new Set();
-  
-  // Собираем ID всех карт у участников
-  Object.values(session.cards).forEach(userCards => {
-    userCards.forEach(card => usedCardIds.add(card.id));
-  });
-  
-  // Добавляем ID карт, которые уже были использованы в ходах
-  session.turns.forEach(turn => {
-    if (turn.cardId) {
-      usedCardIds.add(turn.cardId);
-    }
-  });
-  
-  // Отфильтровываем доступные карты, исключая уже розданные
-  const availableCards = {};
-  Object.keys(allCards).forEach(category => {
-    availableCards[category] = allCards[category].filter(card => !usedCardIds.has(card.id));
-  });
-  
-  // Проверяем, сколько карт доступно в итоге
-  const totalAvailableCards = Object.values(availableCards).reduce((sum, cards) => sum + cards.length, 0);
-  
-  if (totalAvailableCards === 0) {
-    return res.status(400).json({ error: 'Нет доступных карт для раздачи' });
+  if (!skippedUser) {
+    console.log(`Текущий игрок не найден`);
+    return res.status(404).json({ error: 'Текущий игрок не найден' });
   }
   
-  console.log(`Доступно карт для раздачи: ${totalAvailableCards}`);
+  // Находим следующего игрока
+  let nextPlayerIndex = (currentPlayerIndex + 1) % session.userOrder.length;
+  const nextUserId = session.userOrder[nextPlayerIndex];
   
-  // Раздаем по 5 новых карт каждому участнику
-  const cardsPerUser = Math.min(5, Math.floor(totalAvailableCards / session.users.length));
+  // Обновляем текущий ход
+  session.currentTurnUserId = nextUserId;
+  
+  // Уведомляем всех участников о пропуске хода
+  io.to(sessionId).emit('turnSkipped', {
+    skippedUserId: skippedUserId,
+    skippedUserName: skippedUser.name,
+    nextTurnUserId: nextUserId
+  });
+  
+  console.log(`Ход пользователя ${skippedUser.name} пропущен, следующий ход: ${nextUserId}`);
+  
+  // Сохраняем изменения
+  storage.saveData(sessions, users);
+  
+  res.status(200).json({
+    success: true,
+    message: 'Ход успешно пропущен',
+    nextTurnUserId: nextUserId
+  });
+});
+
+// Раздача дополнительных карт
+app.post('/api/sessions/:sessionId/deal-more-cards', (req, res) => {
+  const { sessionId } = req.params;
+  const { userId } = req.body;
+  
+  console.log(`Запрос на раздачу дополнительных карт для сессии ${sessionId} от пользователя ${userId}`);
+  
+  if (!sessions[sessionId]) {
+    console.log(`Сессия ${sessionId} не найдена`);
+    return res.status(404).json({ error: 'Сессия не найдена' });
+  }
+  
+  const session = sessions[sessionId];
+  const user = session.users.find(u => u.id === userId);
+  
+  if (!user || !user.isHost) {
+    console.log(`Только организатор может раздать дополнительные карты`);
+    return res.status(403).json({ error: 'Только организатор может раздать дополнительные карты' });
+  }
+  
+  // Раздаем дополнительные карты всем участникам (по 3 карты)
   const userUpdates = {};
   
-  session.users.forEach(user => {
-    const newCards = [];
-    const userID = user.id;
-    
-    // Пытаемся выбрать по одной карте из каждой категории
-    for (const category of Object.keys(availableCards)) {
-      if (newCards.length >= cardsPerUser) break; // Останавливаемся, если достигли нужного количества карт
-      
-      if (availableCards[category].length > 0) {
-        const card = availableCards[category].shift(); // Берем первую карту из перемешанной категории
-        newCards.push(card);
-      }
+  session.users.forEach(sessionUser => {
+    // Создаем или получаем массив карт пользователя
+    if (!session.cards[sessionUser.id]) {
+      session.cards[sessionUser.id] = [];
     }
     
-    // Если нужно больше карт, берем случайные из оставшихся
-    const allRemainingCards = Object.values(availableCards).flat();
-    while (newCards.length < cardsPerUser && allRemainingCards.length > 0) {
-      const randomIndex = Math.floor(Math.random() * allRemainingCards.length);
-      const card = allRemainingCards.splice(randomIndex, 1)[0];
-      newCards.push(card);
-    }
+    // Получаем текущие карты пользователя
+    const userCards = session.cards[sessionUser.id];
     
-    // Если у пользователя еще нет массива карт, создаем его
-    if (!session.cards[userID]) {
-      session.cards[userID] = [];
-    }
+    // Генерируем новые карты
+    const newCards = generateNewCards(3);
     
     // Добавляем новые карты к существующим
-    session.cards[userID] = [...session.cards[userID], ...newCards];
+    userCards.push(...newCards);
     
-    // Сохраняем информацию о новых картах для каждого пользователя
-    userUpdates[userID] = {
-      newCards,
-      userName: user.name
+    // Сохраняем информацию об обновлении
+    userUpdates[sessionUser.id] = {
+      userId: sessionUser.id,
+      userName: sessionUser.name,
+      newCards: newCards
     };
-    
-    console.log(`Раздано ${newCards.length} карт пользователю ${user.name}`);
   });
   
-  // Уведомляем всех участников о раздаче новых карт
+  // Уведомляем всех участников о раздаче карт
   io.to(sessionId).emit('cardsDealt', userUpdates);
   
-  // Отправляем ответ организатору
+  console.log(`Дополнительные карты успешно розданы в сессии ${sessionId}`);
+  
+  // Сохраняем обновленную сессию
+  storage.saveData(sessions, users);
+  
+  // Отправляем результат
   res.status(200).json({
-    message: 'Дополнительные карты розданы всем участникам',
+    message: 'Карты успешно розданы',
     userUpdates
   });
-
-  storage.saveData(sessions, users);
 });
+
+// Функция для генерации новых карт
+function generateNewCards(count) {
+  const categories = ['ownership', 'values', 'scenarios', 'management', 'empty'];
+  const newCards = [];
+  
+  for (let i = 0; i < count; i++) {
+    // Выбираем случайную категорию
+    const category = categories[Math.floor(Math.random() * categories.length)];
+    
+    // Генерируем ID карты
+    const cardId = `${category}-${uuidv4().substring(0, 8)}`;
+    
+    // Создаем пустую карту с базовым вопросом (вместо полной базы карт)
+    let question = '';
+    let comment = '';
+    
+    switch (category) {
+      case 'ownership':
+        question = 'Как решить вопрос совладения: ' + ['доли при выходе', 'привлечение инвесторов', 'разделение прибыли'][Math.floor(Math.random() * 3)];
+        comment = '<p>Обсудите это важное решение в контексте вашего бизнеса. Результат: договоренность о принципах владения и принятия решений.</p>';
+        break;
+      case 'values':
+        question = 'Какие ценности важны для бизнеса: ' + ['этика', 'прозрачность', 'автономия', 'сотрудничество'][Math.floor(Math.random() * 4)];
+        comment = '<p>Обсудите ключевые ценности, которые будут направлять развитие вашего бизнеса. Результат: список принципов для всех решений компании.</p>';
+        break;
+      case 'scenarios':
+        question = 'Что делать, если ' + ['упадёт рынок', 'ключевой сотрудник уйдёт', 'сменится регулирование'][Math.floor(Math.random() * 3)];
+        comment = '<p>Разработайте план действий на случай непредвиденных обстоятельств. Результат: стратегия действий в критических ситуациях.</p>';
+        break;
+      case 'management':
+        question = 'Кто принимает решения о ' + ['найме', 'крупных расходах', 'новых продуктах', 'увольнении'][Math.floor(Math.random() * 4)];
+        comment = '<p>Определите четкие зоны ответственности в управлении. Результат: прописанные роли и полномочия в принятии решений.</p>';
+        break;
+      case 'empty':
+        question = 'Что для вас служит главной мотивацией в бизнесе?';
+        comment = '<p>Откройтесь и поделитесь вашими истинными мотивами ведения бизнеса. Результат: лучшее понимание целей и стремлений друг друга.</p>';
+        break;
+    }
+    
+    newCards.push({
+      id: cardId,
+      category: category,
+      question: question,
+      comment: comment
+    });
+  }
+  
+  return newCards;
+}
 
 // Получение истории ходов сессии
 app.get('/api/sessions/:sessionId/turns', (req, res) => {
