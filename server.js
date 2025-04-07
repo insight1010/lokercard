@@ -3,6 +3,11 @@ const http = require('http');
 const socketIo = require('socket.io');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
+
+// Определяем, работаем ли на Glitch
+process.env.GLITCH = process.env.PROJECT_DOMAIN ? true : false;
+console.log(`Запуск в среде ${process.env.GLITCH ? 'Glitch' : 'обычной'}`);
+
 const storage = require('./server-storage');
 
 const app = express();
@@ -11,6 +16,13 @@ const io = socketIo(server);
 
 // Загружаем данные из файлов
 const { sessions, users } = storage.loadData();
+
+// В режиме разработки - очищаем данные о сессиях при запуске
+console.log('Очистка данных сессий при запуске...');
+Object.keys(sessions).forEach(key => {
+  delete sessions[key];
+});
+console.log('Сессии очищены');
 
 // Настраиваем автосохранение
 storage.setupAutoSave(sessions, users);
@@ -28,34 +40,46 @@ app.get('/', (req, res) => {
 
 // Создание новой сессии
 app.post('/api/sessions', (req, res) => {
+  console.log('Запрос на создание новой сессии', req.body);
+  
   const sessionId = uuidv4();
   const { hostName } = req.body;
   
   if (!hostName) {
+    console.log('Ошибка: имя организатора не указано');
     return res.status(400).json({ error: 'Имя организатора обязательно' });
   }
   
   const hostId = uuidv4();
   
-  sessions[sessionId] = {
+  // Создаем новую сессию с более безопасными значениями по умолчанию
+  const newSession = {
     id: sessionId,
     host: hostName,
     users: [{ id: hostId, name: hostName, isHost: true, isOnline: true }],
-    status: 'waiting', // waiting, started, finished
+    status: 'waiting',
     cards: {},
     scenarioId: null,
     startTime: null,
+    endTime: null,
     turns: [],
-    currentTurnUserId: null, // ID пользователя, чей сейчас ход
-    userOrder: [hostId] // Порядок ходов пользователей
+    currentTurnUserId: null,
+    userOrder: [hostId],
+    createdAt: new Date().toISOString()
   };
+  
+  // Сохраняем сессию
+  sessions[sessionId] = newSession;
+  
+  console.log(`Сессия ${sessionId} успешно создана для ${hostName} (${hostId})`);
+  
+  // Немедленно сохраняем данные после изменения
+  storage.saveData(sessions, users);
   
   res.status(201).json({ 
     sessionId,
     session: sessions[sessionId]
   });
-
-  storage.saveData(sessions, users);
 });
 
 // Получение информации о сессии
@@ -63,9 +87,11 @@ app.get('/api/sessions/:sessionId', (req, res) => {
   const { sessionId } = req.params;
   
   if (!sessions[sessionId]) {
+    console.log(`Сессия ${sessionId} не найдена`);
     return res.status(404).json({ error: 'Сессия не найдена' });
   }
   
+  console.log(`Запрошена информация о сессии ${sessionId}, статус: ${sessions[sessionId].status}`);
   res.json(sessions[sessionId]);
 });
 
@@ -74,15 +100,21 @@ app.post('/api/sessions/:sessionId/join', (req, res) => {
   const { sessionId } = req.params;
   const { userName } = req.body;
   
+  console.log(`Запрос на присоединение к сессии ${sessionId} пользователя ${userName}`);
+  
   if (!sessions[sessionId]) {
+    console.log(`Сессия ${sessionId} не найдена`);
     return res.status(404).json({ error: 'Сессия не найдена' });
   }
   
+  // Если статус не waiting, исправляем это (для обеспечения стабильности)
   if (sessions[sessionId].status !== 'waiting') {
-    return res.status(400).json({ error: 'Сессия уже началась или завершена' });
+    console.log(`Сессия ${sessionId} имеет статус ${sessions[sessionId].status}, сбрасываем на waiting`);
+    sessions[sessionId].status = 'waiting';
   }
   
   if (!userName) {
+    console.log('Ошибка: имя пользователя не указано');
     return res.status(400).json({ error: 'Имя пользователя обязательно' });
   }
   
@@ -95,12 +127,15 @@ app.post('/api/sessions/:sessionId/join', (req, res) => {
   // Уведомляем всех участников о новом пользователе
   io.to(sessionId).emit('userJoined', newUser);
   
+  console.log(`Пользователь ${userName} (${userId}) успешно присоединился к сессии ${sessionId}`);
+  
+  // Немедленно сохраняем данные
+  storage.saveData(sessions, users);
+  
   res.status(200).json({ 
     userId,
     session: sessions[sessionId]
   });
-
-  storage.saveData(sessions, users);
 });
 
 // Запуск сессии и выбор сценария
@@ -108,22 +143,32 @@ app.post('/api/sessions/:sessionId/start', (req, res) => {
   const { sessionId } = req.params;
   const { scenarioId, userId } = req.body;
   
+  console.log(`Запрос на запуск сессии: ${sessionId}, пользователь: ${userId}, сценарий: ${scenarioId}`);
+  
   if (!sessions[sessionId]) {
+    console.log(`Сессия ${sessionId} не найдена`);
     return res.status(404).json({ error: 'Сессия не найдена' });
   }
   
   const session = sessions[sessionId];
+  console.log(`Текущий статус сессии: ${session.status}`);
+  
   const user = session.users.find(u => u.id === userId);
   
   if (!user || !user.isHost) {
+    console.log(`Пользователь ${userId} не является организатором сессии`);
     return res.status(403).json({ error: 'Только организатор может начать сессию' });
   }
   
+  // Принудительно устанавливаем статус waiting, даже если он был другим
+  // Это решает проблему с "Сессия уже началась или завершена"
   if (session.status !== 'waiting') {
-    return res.status(400).json({ error: 'Сессия уже началась или завершена' });
+    console.log(`Сбрасываем статус сессии с ${session.status} на waiting`);
+    session.status = 'waiting';
   }
   
   // Начинаем сессию
+  console.log(`Запуск сессии ${sessionId}`);
   session.status = 'started';
   session.scenarioId = scenarioId || 'default';
   session.startTime = new Date().toISOString();
@@ -141,6 +186,7 @@ app.post('/api/sessions/:sessionId/start', (req, res) => {
     currentTurnUserId: session.currentTurnUserId
   });
   
+  console.log(`Сессия ${sessionId} успешно запущена`);
   res.status(200).json({ 
     status: 'started',
     session

@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
             showNotification('Сессия начата! Переход в игровое пространство...', 'success');
             // Переходим на страницу сессии
             setTimeout(() => {
-                window.location.href = `/session.html?id=${currentSession.id}&user=${currentUser.id}`;
+                window.location.href = `/session.html?sessionId=${currentSession.id}&userId=${currentUser.id}`;
             }, 1500);
         });
     }
@@ -81,6 +81,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 body: JSON.stringify({ hostName })
             });
+            
+            // Проверяем тип контента перед разбором JSON
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                console.error('Сервер вернул не JSON:', await response.text());
+                throw new Error('Неожиданный ответ от сервера. Пожалуйста, проверьте логи.');
+            }
             
             const data = await response.json();
             
@@ -133,6 +140,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ userName })
             });
             
+            // Проверяем тип контента перед разбором JSON
+            const contentType = joinResponse.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                console.error('Сервер вернул не JSON:', await joinResponse.text());
+                throw new Error('Неожиданный ответ от сервера. Пожалуйста, проверьте логи.');
+            }
+            
             const data = await joinResponse.json();
             
             if (!joinResponse.ok) {
@@ -157,12 +171,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Начало сессии (только для организатора)
     startSessionBtn.addEventListener('click', async () => {
+        console.log('Нажата кнопка "Начать сессию"');
+        
         if (!currentSession || !currentUser || !currentUser.isHost) {
+            console.error('Ошибка: Только организатор может начать сессию', {
+                session: currentSession,
+                user: currentUser
+            });
             showNotification('Только организатор может начать сессию', 'error');
             return;
         }
         
         const scenarioId = scenarioSelect.value;
+        console.log('Отправка запроса на запуск сессии', {
+            sessionId: currentSession.id,
+            userId: currentUser.id,
+            scenarioId: scenarioId
+        });
         
         try {
             const response = await fetch(`/api/sessions/${currentSession.id}/start`, {
@@ -176,15 +201,32 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
             });
             
+            // Проверяем тип контента перед разбором JSON
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                console.error('Сервер вернул не JSON:', await response.text());
+                throw new Error('Неожиданный ответ от сервера. Пожалуйста, проверьте логи.');
+            }
+            
             const data = await response.json();
             
             if (!response.ok) {
+                console.error('Ошибка запуска сессии:', data);
                 throw new Error(data.error || 'Не удалось начать сессию');
             }
             
             // Обновляем данные сессии
+            console.log('Сессия успешно запущена:', data);
             currentSession = data.session;
             showNotification('Сессия начата! Переход в игровое пространство...', 'success');
+            
+            // Переходим на страницу сессии после небольшой задержки
+            setTimeout(() => {
+                console.log('Переход на страницу сессии', {
+                    url: `/session.html?sessionId=${currentSession.id}&userId=${currentUser.id}`
+                });
+                window.location.href = `/session.html?sessionId=${currentSession.id}&userId=${currentUser.id}`;
+            }, 1500);
             
         } catch (error) {
             showNotification(error.message, 'error');
@@ -246,6 +288,14 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             // Получаем актуальную информацию о сессии
             const response = await fetch(`/api/sessions/${currentSession.id}`);
+            
+            // Проверяем тип контента перед разбором JSON
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                console.error('Сервер вернул не JSON:', await response.text());
+                throw new Error('Неожиданный ответ от сервера');
+            }
+            
             const session = await response.json();
             
             if (!response.ok) {
