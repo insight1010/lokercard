@@ -291,7 +291,12 @@ function dealCards(sessionId) {
     });
     
     // Если нужно 5 карт, а категорий меньше, добираем из оставшихся
-    const allRemainingCards = Object.values(allCards).flat();
+    // Заменяем flat() на более совместимый метод для Node.js 10
+    const allRemainingCards = [];
+    Object.keys(allCards).forEach(category => {
+      allRemainingCards.push(...allCards[category]);
+    });
+    
     while (userCards.length < 5 && allRemainingCards.length > 0) {
       const randomIndex = Math.floor(Math.random() * allRemainingCards.length);
       userCards.push(allRemainingCards.splice(randomIndex, 1)[0]);
