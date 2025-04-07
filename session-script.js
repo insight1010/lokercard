@@ -1,15 +1,33 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Получаем параметры из URL
     const urlParams = new URLSearchParams(window.location.search);
-    sessionId = urlParams.get('sessionId');
-    userId = urlParams.get('userId');
+    let sessionId = urlParams.get('sessionId');
+    let userId = urlParams.get('userId');
+    
+    // Если параметры отсутствуют в URL, пытаемся восстановить из localStorage
+    if (!sessionId || !userId) {
+        const storedSessionId = localStorage.getItem('sessionId');
+        const storedUserId = localStorage.getItem('userId');
+        
+        if (storedSessionId && storedUserId) {
+            console.log('Восстановление параметров сессии из localStorage');
+            sessionId = storedSessionId;
+            userId = storedUserId;
+            
+            // Обновляем URL без перезагрузки страницы
+            const restoredParams = new URLSearchParams();
+            restoredParams.append('sessionId', sessionId);
+            restoredParams.append('userId', userId);
+            window.history.replaceState({}, '', `${window.location.pathname}?${restoredParams.toString()}`);
+        }
+    }
     
     // Проверяем, что есть необходимые параметры
     if (!sessionId || !userId) {
         console.error('Не указан ID сессии или пользователя');
         showNotification('Отсутствуют необходимые параметры', 'error');
         setTimeout(() => {
-            window.location.href = '/index.html';
+            window.location.href = '/lobby.html';
         }, 2000);
         return;
     }

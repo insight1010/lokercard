@@ -142,11 +142,34 @@
             newQueryParams.append('userId', urlParams.get('userId'));
         }
         
+        // Сохраняем параметры в localStorage, если они есть в URL
+        if (newQueryParams.has('sessionId') && newQueryParams.has('userId')) {
+            localStorage.setItem('sessionId', newQueryParams.get('sessionId'));
+            localStorage.setItem('userId', newQueryParams.get('userId'));
+            console.log('Параметры сессии сохранены в localStorage');
+        }
+        
         // Если параметры изменились, перенаправляем на новый URL
         if ((urlParams.has('id') || urlParams.has('user')) && 
             !(urlParams.has('sessionId') && urlParams.has('userId'))) {
             window.history.replaceState({}, '', `${window.location.pathname}?${newQueryParams.toString()}`);
             console.log('URL параметры обновлены:', window.location.search);
+        }
+        
+        // Если в URL нет параметров, но они есть в localStorage, восстанавливаем их
+        if (!urlParams.has('sessionId') && !urlParams.has('userId') && 
+            localStorage.getItem('sessionId') && localStorage.getItem('userId')) {
+            const storedSessionId = localStorage.getItem('sessionId');
+            const storedUserId = localStorage.getItem('userId');
+            
+            // Добавляем параметры в URL
+            const restoredParams = new URLSearchParams();
+            restoredParams.append('sessionId', storedSessionId);
+            restoredParams.append('userId', storedUserId);
+            
+            // Обновляем URL без перезагрузки страницы
+            window.history.replaceState({}, '', `${window.location.pathname}?${restoredParams.toString()}`);
+            console.log('Параметры сессии восстановлены из localStorage');
         }
     </script>
     <script src="session-script.js"></script>
