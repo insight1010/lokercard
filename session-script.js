@@ -293,14 +293,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Если был последний ход и он НЕ от текущего пользователя, показываем информацию о нем
                 // (для своего хода информация уже добавлена в submitAnswer)
                 if (data.lastMoveData && data.lastMoveData.userId !== userId) {
-                    const playerName = session.users.find(u => u.id === data.lastMoveData.userId)?.name || 'Неизвестный игрок';
-                    addTurnToLog({
-                        userId: data.lastMoveData.userId,
+                    const lastMoveData = data.lastMoveData;
+                    const playerName = session.users.find(u => u.id === lastMoveData.userId)?.name || 'Неизвестный игрок';
+                    
+                    // Извлекаем вопрос из объекта карты или из прямого поля
+                    const cardQuestion = lastMoveData.card ? lastMoveData.card.question : 
+                                        (lastMoveData.cardQuestion || 'Вопрос недоступен');
+                    
+                    // Создаем объект для хода
+                    const turnData = {
+                        userId: lastMoveData.userId,
                         userName: playerName,
-                        cardQuestion: data.lastMoveData.card.question,
-                        answer: data.lastMoveData.answer,
-                        timestamp: data.lastMoveData.timestamp
-                    });
+                        cardQuestion: cardQuestion,
+                        cardId: lastMoveData.cardId,
+                        answer: lastMoveData.answer,
+                        timestamp: lastMoveData.timestamp
+                    };
+                    
+                    // Добавляем ход в лог и обновляем localStorage (как новый ход)
+                    addTurnToLog(turnData, true);
+                    
                     showNotification(`${playerName} ответил на карту`, 'info');
                 }
                 
@@ -581,13 +593,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 turnsContainer.innerHTML = '';
             }
             
+            // Сохраняем ходы в локальное хранилище
+            if (turns && turns.length > 0) {
+                localStorage.setItem(`session_turns_${sessionId}`, JSON.stringify(turns));
+                console.log('История ходов сохранена в localStorage');
+            }
+            
             // Отображаем каждый ход
             turns.forEach(turn => {
-                // Преобразуем ход в нужный формат, если нужно
+                // Преобразуем ход в нужный формат
                 const formattedTurn = {
                     userId: turn.userId,
                     userName: turn.userName || 'Неизвестный игрок',
-                    cardQuestion: turn.cardQuestion || 'Вопрос недоступен',
+                    cardQuestion: turn.cardQuestion || (turn.card && turn.card.question) || 'Вопрос недоступен',
                     answer: turn.answer || 'Без ответа',
                     timestamp: turn.timestamp || new Date().toISOString()
                 };
@@ -597,7 +615,39 @@ document.addEventListener('DOMContentLoaded', () => {
             
         } catch (error) {
             console.error('Ошибка при загрузке истории ходов:', error);
-            showNotification('Не удалось загрузить историю ходов', 'warning');
+            showNotification('Не удалось загрузить историю ходов с сервера', 'warning');
+            
+            // Пробуем восстановить ходы из localStorage
+            try {
+                const savedTurns = localStorage.getItem(`session_turns_${sessionId}`);
+                if (savedTurns) {
+                    const turns = JSON.parse(savedTurns);
+                    console.log('Восстановлена история ходов из localStorage:', turns);
+                    
+                    // Отображаем восстановленные ходы
+                    const turnsContainer = document.getElementById('turns-container');
+                    if (turnsContainer) {
+                        turnsContainer.innerHTML = '';
+                    }
+                    
+                    turns.forEach(turn => {
+                        // Преобразуем ход в нужный формат
+                        const formattedTurn = {
+                            userId: turn.userId,
+                            userName: turn.userName || 'Неизвестный игрок',
+                            cardQuestion: turn.cardQuestion || (turn.card && turn.card.question) || 'Вопрос недоступен',
+                            answer: turn.answer || 'Без ответа',
+                            timestamp: turn.timestamp || new Date().toISOString()
+                        };
+                        
+                        addTurnToLog(formattedTurn, false);
+                    });
+                    
+                    showNotification('История ходов восстановлена из локального хранилища', 'info');
+                }
+            } catch (localStorageError) {
+                console.error('Ошибка при восстановлении истории ходов из localStorage:', localStorageError);
+            }
         }
     }
     
@@ -614,6 +664,28 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!turn.userName || !turn.cardQuestion || !turn.answer) {
             console.error('Ход не содержит необходимых данных:', turn);
             return;
+        }
+        
+        // Если это новый ход, сохраняем его в localStorage
+        if (isNew) {
+            try {
+                // Получаем текущие ходы из localStorage
+                const savedTurnsJson = localStorage.getItem(`session_turns_${sessionId}`);
+                let savedTurns = [];
+                
+                if (savedTurnsJson) {
+                    savedTurns = JSON.parse(savedTurnsJson);
+                }
+                
+                // Добавляем новый ход
+                savedTurns.push(turn);
+                
+                // Сохраняем обновленную историю
+                localStorage.setItem(`session_turns_${sessionId}`, JSON.stringify(savedTurns));
+                console.log('Ход добавлен в localStorage');
+            } catch (error) {
+                console.error('Ошибка при сохранении хода в localStorage:', error);
+            }
         }
         
         // Создаем элемент хода
@@ -781,13 +853,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const turnItem = document.createElement('div');
             turnItem.className = 'modal-turn-item';
             
+            // Извлекаем вопрос либо из строкового поля cardQuestion, либо из объекта card
+            const cardQuestion = turn.cardQuestion || (turn.card && turn.card.question) || 'Вопрос недоступен';
+            
             turnItem.innerHTML = `
                 <div class="modal-turn-header">
-                    <strong>${turn.userName}</strong> ответил на вопрос:
+                    <strong>${turn.userName || 'Неизвестный игрок'}</strong> ответил на вопрос:
                 </div>
-                <div class="modal-turn-question">${turn.cardQuestion}</div>
-                <div class="modal-turn-answer">${turn.answer}</div>
-                <div class="modal-turn-time">${new Date(turn.timestamp).toLocaleString()}</div>
+                <div class="modal-turn-question">${cardQuestion}</div>
+                <div class="modal-turn-answer">${turn.answer || 'Ответ не указан'}</div>
+                <div class="modal-turn-time">${new Date(turn.timestamp || new Date()).toLocaleString()}</div>
             `;
             
             turnList.appendChild(turnItem);
@@ -889,11 +964,15 @@ document.addEventListener('DOMContentLoaded', () => {
             if (result.moveData) {
                 const moveData = result.moveData;
                 
+                // Сохраняем вопрос из объекта карты
+                const cardQuestion = moveData.card ? moveData.card.question : 
+                                    (activeCardData ? activeCardData.question : 'Вопрос недоступен');
+                
                 // Форматируем данные хода
                 const turnData = {
                     userId: moveData.userId,
                     userName: currentUser.name,
-                    cardQuestion: moveData.card.question,
+                    cardQuestion: cardQuestion,
                     cardId: moveData.cardId,
                     answer: moveData.answer,
                     timestamp: moveData.timestamp
