@@ -279,32 +279,62 @@ function createInitialDeck(session, scenarioId) {
     ]
   };
   
+  // Создаем множество для отслеживания идентификаторов карт, которые уже добавлены в колоду
+  // для предотвращения дубликатов
+  const addedCardIds = new Set();
+  
   // Создаем колоду в зависимости от выбранного сценария
   let deck = [];
   
   if (scenarioId === 'default' || !scenarioId) {
     // Добавляем все карты из всех категорий
     Object.keys(allCards).forEach(category => {
-      deck = [...deck, ...allCards[category]];
+      allCards[category].forEach(card => {
+        if (!addedCardIds.has(card.id)) {
+          deck.push(card);
+          addedCardIds.add(card.id);
+        } else {
+          console.log(`Найден дубликат карты ${card.id}, пропускаем`);
+        }
+      });
     });
   } else {
     // Добавляем карты только из выбранной категории
     if (allCards[scenarioId]) {
-      deck = [...allCards[scenarioId]];
+      allCards[scenarioId].forEach(card => {
+        if (!addedCardIds.has(card.id)) {
+          deck.push(card);
+          addedCardIds.add(card.id);
+        } else {
+          console.log(`Найден дубликат карты ${card.id}, пропускаем`);
+        }
+      });
     } else {
       console.log(`Неизвестный сценарий ${scenarioId}, используем все карты`);
       Object.keys(allCards).forEach(category => {
-        deck = [...deck, ...allCards[category]];
+        allCards[category].forEach(card => {
+          if (!addedCardIds.has(card.id)) {
+            deck.push(card);
+            addedCardIds.add(card.id);
+          } else {
+            console.log(`Найден дубликат карты ${card.id}, пропускаем`);
+          }
+        });
       });
     }
+  }
+  
+  // Инициализируем или сбрасываем множество использованных карт
+  if (!session.usedCards || !(session.usedCards instanceof Set)) {
+    session.usedCards = new Set();
+  } else {
+    // Очищаем множество использованных карт
+    session.usedCards.clear();
   }
   
   // Перемешиваем колоду
   session.deck = shuffleArray(deck);
   console.log(`Создана колода с ${session.deck.length} картами`);
-  
-  // Очищаем множество использованных карт
-  session.usedCards = new Set();
 }
 
 // Функция раздачи карт
@@ -313,6 +343,12 @@ function dealCards(sessionId) {
   if (!session) return;
   
   console.log(`Раздача карт для сессии ${sessionId}`);
+  
+  // Проверяем, инициализировано ли множество использованных карт
+  if (!session.usedCards || !(session.usedCards instanceof Set)) {
+    console.log(`Инициализируем множество использованных карт для сессии ${sessionId}`);
+    session.usedCards = new Set();
+  }
   
   // Раздаем по 5 карт каждому участнику из колоды
   session.users.forEach(user => {
@@ -326,8 +362,16 @@ function dealCards(sessionId) {
     // Раздаем до 5 карт пользователю
     while (userCards.length < 5 && session.deck.length > 0) {
       const card = session.deck.pop();
-      userCards.push(card);
-      session.usedCards.add(card.id);
+      
+      // Проверяем, что карта еще не была использована
+      if (!session.usedCards.has(card.id)) {
+        userCards.push(card);
+        session.usedCards.add(card.id);
+        console.log(`Пользователю ${user.name} выдана карта ${card.id}`);
+      } else {
+        console.log(`Карта ${card.id} уже была использована, пропускаем`);
+        // Если карта уже использована, продолжаем перебор без добавления карты
+      }
     }
     
     console.log(`Пользователю ${user.name} роздано ${userCards.length} карт`);
@@ -630,6 +674,12 @@ app.post('/api/sessions/:sessionId/deal-more-cards', (req, res) => {
     });
   }
   
+  // Проверяем, инициализировано ли множество использованных карт
+  if (!session.usedCards || !(session.usedCards instanceof Set)) {
+    console.log(`Инициализируем множество использованных карт для сессии ${sessionId}`);
+    session.usedCards = new Set();
+  }
+  
   // Раздаем дополнительные карты всем участникам
   const userUpdates = {};
   const cardsPerUser = Math.min(3, Math.floor(session.deck.length / session.users.length)) || 1;
@@ -649,9 +699,18 @@ app.post('/api/sessions/:sessionId/deal-more-cards', (req, res) => {
     // Добавляем новые карты из колоды
     for (let i = 0; i < cardsPerUser && session.deck.length > 0; i++) {
       const card = session.deck.pop();
-      userCards.push(card);
-      newCards.push(card);
-      session.usedCards.add(card.id);
+      
+      // Проверяем, что карта еще не была использована
+      if (!session.usedCards.has(card.id)) {
+        userCards.push(card);
+        newCards.push(card);
+        session.usedCards.add(card.id);
+        console.log(`Пользователю ${sessionUser.name} выдана дополнительная карта ${card.id}`);
+      } else {
+        console.log(`Карта ${card.id} уже была использована, пропускаем`);
+        // Если карта уже использована, продолжаем без добавления
+        i--; // Уменьшаем счетчик, чтобы попытаться взять другую карту
+      }
     }
     
     // Сохраняем информацию об обновлении

@@ -17,6 +17,28 @@ const memoryStore = {
 //  fs.mkdirSync(DATA_DIR, { recursive: true });
 // }
 
+// Функция для обработки множеств Set и Map при сериализации
+function replacer(key, value) {
+  if (value instanceof Set) {
+    return { _type: 'Set', values: Array.from(value) };
+  }
+  if (value instanceof Map) {
+    return { _type: 'Map', entries: Array.from(value.entries()) };
+  }
+  return value;
+}
+
+// Функция для восстановления объектов при десериализации
+function reviver(key, value) {
+  if (value && typeof value === 'object' && value._type === 'Set') {
+    return new Set(value.values);
+  }
+  if (value && typeof value === 'object' && value._type === 'Map') {
+    return new Map(value.entries);
+  }
+  return value;
+}
+
 // Загрузка данных из файлов
 function loadData() {
   try {
@@ -31,7 +53,7 @@ function loadData() {
     
     if (fs.existsSync(SESSIONS_FILE)) {
       const sessionsData = fs.readFileSync(SESSIONS_FILE, 'utf8');
-      sessions = JSON.parse(sessionsData);
+      sessions = JSON.parse(sessionsData, reviver);
       console.log(`Загружено ${Object.keys(sessions).length} сессий из файла`);
     } else {
       console.log('Файл сессий не найден, используем данные из памяти');
@@ -40,12 +62,24 @@ function loadData() {
     
     if (fs.existsSync(USERS_FILE)) {
       const usersData = fs.readFileSync(USERS_FILE, 'utf8');
-      users = JSON.parse(usersData);
+      users = JSON.parse(usersData, reviver);
       console.log(`Загружено ${Object.keys(users).length} пользователей из файла`);
     } else {
       console.log('Файл пользователей не найден, используем данные из памяти');
       users = memoryStore.users;
     }
+
+    // Проверка и восстановление множеств usedCards
+    Object.values(sessions).forEach(session => {
+      if (session.usedCards && !(session.usedCards instanceof Set)) {
+        console.log(`Восстанавливаем множество usedCards для сессии ${session.id}`);
+        if (Array.isArray(session.usedCards)) {
+          session.usedCards = new Set(session.usedCards);
+        } else {
+          session.usedCards = new Set();
+        }
+      }
+    });
     
     return { sessions, users };
   } catch (error) {
@@ -67,9 +101,9 @@ function saveData(sessions, users) {
       return;
     }
     
-    // Пытаемся сохранить в файлы
-    fs.writeFileSync(SESSIONS_FILE, JSON.stringify(sessions, null, 2));
-    fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+    // Пытаемся сохранить в файлы с правильной сериализацией Set и Map
+    fs.writeFileSync(SESSIONS_FILE, JSON.stringify(sessions, replacer, 2));
+    fs.writeFileSync(USERS_FILE, JSON.stringify(users, replacer, 2));
     console.log('Данные успешно сохранены в файлы');
   } catch (error) {
     console.error('Ошибка при сохранении данных в файлы:', error);
