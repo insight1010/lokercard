@@ -59,6 +59,8 @@ app.post('/api/sessions', (req, res) => {
     users: [{ id: hostId, name: hostName, isHost: true, isOnline: true }],
     status: 'waiting',
     cards: {},
+    deck: [], // Инициализируем пустую колоду
+    usedCards: new Set(), // Множество для отслеживания использованных карт
     scenarioId: null,
     startTime: null,
     endTime: null,
@@ -176,6 +178,9 @@ app.post('/api/sessions/:sessionId/start', (req, res) => {
   // Устанавливаем первого игрока (организатора) как текущего
   session.currentTurnUserId = session.userOrder[0];
   
+  // Создаем колоду при запуске сессии в зависимости от выбранного сценария
+  createInitialDeck(session, scenarioId);
+  
   // Раздаем карты участникам
   dealCards(sessionId);
   
@@ -195,12 +200,11 @@ app.post('/api/sessions/:sessionId/start', (req, res) => {
   storage.saveData(sessions, users);
 });
 
-// Функция раздачи карт
-function dealCards(sessionId) {
-  const session = sessions[sessionId];
-  if (!session) return;
+// Функция создания начальной колоды карт
+function createInitialDeck(session, scenarioId) {
+  console.log(`Создание начальной колоды для сессии с сценарием: ${scenarioId}`);
   
-  // Используем реальные карточки с фактическими вопросами и комментариями из index.html
+  // Используем существующие карточки из объекта allCards
   const allCards = {
     ownership: [
       { id: 'ownership-1', category: 'ownership', question: 'Как оценим бизнес, если один захочет выйти завтра?', 
@@ -275,35 +279,69 @@ function dealCards(sessionId) {
     ]
   };
   
-  // Перемешиваем карты каждой категории
-  Object.keys(allCards).forEach(category => {
-    allCards[category] = shuffleArray(allCards[category]);
-  });
+  // Создаем колоду в зависимости от выбранного сценария
+  let deck = [];
   
-  // Раздаем по 5 карт каждому участнику
+  if (scenarioId === 'default' || !scenarioId) {
+    // Добавляем все карты из всех категорий
+    Object.keys(allCards).forEach(category => {
+      deck = [...deck, ...allCards[category]];
+    });
+  } else {
+    // Добавляем карты только из выбранной категории
+    if (allCards[scenarioId]) {
+      deck = [...allCards[scenarioId]];
+    } else {
+      console.log(`Неизвестный сценарий ${scenarioId}, используем все карты`);
+      Object.keys(allCards).forEach(category => {
+        deck = [...deck, ...allCards[category]];
+      });
+    }
+  }
+  
+  // Перемешиваем колоду
+  session.deck = shuffleArray(deck);
+  console.log(`Создана колода с ${session.deck.length} картами`);
+  
+  // Очищаем множество использованных карт
+  session.usedCards = new Set();
+}
+
+// Функция раздачи карт
+function dealCards(sessionId) {
+  const session = sessions[sessionId];
+  if (!session) return;
+  
+  console.log(`Раздача карт для сессии ${sessionId}`);
+  
+  // Раздаем по 5 карт каждому участнику из колоды
   session.users.forEach(user => {
-    // Выбираем случайно по одной карте из каждой категории
-    const userCards = [];
-    Object.keys(allCards).forEach(category => {
-      if (allCards[category].length > 0) {
-        userCards.push(allCards[category].pop());
-      }
-    });
-    
-    // Если нужно 5 карт, а категорий меньше, добираем из оставшихся
-    // Заменяем flat() на более совместимый метод для Node.js 10
-    const allRemainingCards = [];
-    Object.keys(allCards).forEach(category => {
-      allRemainingCards.push(...allCards[category]);
-    });
-    
-    while (userCards.length < 5 && allRemainingCards.length > 0) {
-      const randomIndex = Math.floor(Math.random() * allRemainingCards.length);
-      userCards.push(allRemainingCards.splice(randomIndex, 1)[0]);
+    // Инициализируем массив карт для пользователя
+    if (!session.cards[user.id]) {
+      session.cards[user.id] = [];
     }
     
-    session.cards[user.id] = userCards;
+    const userCards = session.cards[user.id];
+    
+    // Раздаем до 5 карт пользователю
+    while (userCards.length < 5 && session.deck.length > 0) {
+      const card = session.deck.pop();
+      userCards.push(card);
+      session.usedCards.add(card.id);
+    }
+    
+    console.log(`Пользователю ${user.name} роздано ${userCards.length} карт`);
   });
+  
+  // Проверяем, осталось ли что-то в колоде
+  if (session.deck.length === 0) {
+    console.log('Колода карт исчерпана!');
+    // Уведомляем об окончании колоды
+    io.to(sessionId).emit('deckEmpty', {
+      message: 'Колода карт исчерпана. Завершите игру после последнего хода.',
+      deckEmpty: true
+    });
+  }
 
   storage.saveData(sessions, users);
 }
@@ -357,8 +395,11 @@ app.post('/api/sessions/:sessionId/turn', (req, res) => {
         return res.status(404).json({ error: 'Карта не найдена у пользователя' });
     }
     
-    // Получаем карту
-    const card = userCards[cardIndex];
+    // Получаем карту и удаляем из руки пользователя
+    const card = userCards.splice(cardIndex, 1)[0];
+    
+    // Добавляем карту в множество использованных карт
+    session.usedCards.add(card.id);
     
     // Создаем объект хода
     const moveData = {
@@ -373,9 +414,6 @@ app.post('/api/sessions/:sessionId/turn', (req, res) => {
     // Добавляем ход в историю
     session.turns.push(moveData);
     
-    // Удаляем карту из руки пользователя
-    userCards.splice(cardIndex, 1);
-    
     // Определяем следующего игрока
     const nextTurnUserId = moveToNextPlayer(session);
     
@@ -389,12 +427,28 @@ app.post('/api/sessions/:sessionId/turn', (req, res) => {
     // Отправляем обновленные данные сессии всем участникам
     io.to(sessionId).emit('sessionUpdated', session);
     
+    // Проверяем, остались ли карты у пользователей и в колоде
+    const totalCardsInHands = Object.values(session.cards).reduce(
+        (total, cards) => total + cards.length, 0
+    );
+    
+    if (totalCardsInHands === 0 && session.deck.length === 0) {
+        console.log(`Все карты разыграны в сессии ${sessionId}`);
+        // Уведомляем о завершении игры
+        io.to(sessionId).emit('allCardsPlayed', {
+            message: 'Все карты разыграны. Игра завершается.',
+            allCardsPlayed: true
+        });
+    }
+    
     // Возвращаем результат
     res.status(200).json({ 
         message: 'Ход совершен успешно',
         moveData,
         nextTurnUserId: session.currentTurnUserId,
-        remainingCards: userCards.length
+        remainingCards: userCards.length,
+        remainingDeckCards: session.deck.length,
+        totalUsedCards: session.usedCards.size
     });
 
     storage.saveData(sessions, users);
@@ -567,8 +621,20 @@ app.post('/api/sessions/:sessionId/deal-more-cards', (req, res) => {
     return res.status(403).json({ error: 'Только организатор может раздать дополнительные карты' });
   }
   
-  // Раздаем дополнительные карты всем участникам (по 3 карты)
+  // Проверяем, остались ли карты в колоде
+  if (session.deck.length === 0) {
+    console.log(`Колода пуста в сессии ${sessionId}, невозможно раздать карты`);
+    return res.status(400).json({ 
+      error: 'Колода карт исчерпана',
+      deckEmpty: true
+    });
+  }
+  
+  // Раздаем дополнительные карты всем участникам
   const userUpdates = {};
+  const cardsPerUser = Math.min(3, Math.floor(session.deck.length / session.users.length)) || 1;
+  
+  console.log(`Раздаем по ${cardsPerUser} карт каждому участнику`);
   
   session.users.forEach(sessionUser => {
     // Создаем или получаем массив карт пользователя
@@ -578,12 +644,15 @@ app.post('/api/sessions/:sessionId/deal-more-cards', (req, res) => {
     
     // Получаем текущие карты пользователя
     const userCards = session.cards[sessionUser.id];
+    const newCards = [];
     
-    // Генерируем новые карты
-    const newCards = generateNewCards(3);
-    
-    // Добавляем новые карты к существующим
-    userCards.push(...newCards);
+    // Добавляем новые карты из колоды
+    for (let i = 0; i < cardsPerUser && session.deck.length > 0; i++) {
+      const card = session.deck.pop();
+      userCards.push(card);
+      newCards.push(card);
+      session.usedCards.add(card.id);
+    }
     
     // Сохраняем информацию об обновлении
     userUpdates[sessionUser.id] = {
@@ -591,7 +660,19 @@ app.post('/api/sessions/:sessionId/deal-more-cards', (req, res) => {
       userName: sessionUser.name,
       newCards: newCards
     };
+    
+    console.log(`Пользователю ${sessionUser.name} роздано ${newCards.length} карт`);
   });
+  
+  // Проверяем, осталось ли что-то в колоде после раздачи
+  if (session.deck.length === 0) {
+    console.log('Колода карт исчерпана после раздачи!');
+    // Уведомляем об окончании колоды
+    io.to(sessionId).emit('deckEmpty', {
+      message: 'Колода карт исчерпана. Последние карты розданы.',
+      deckEmpty: true
+    });
+  }
   
   // Уведомляем всех участников о раздаче карт
   io.to(sessionId).emit('cardsDealt', userUpdates);
@@ -604,59 +685,11 @@ app.post('/api/sessions/:sessionId/deal-more-cards', (req, res) => {
   // Отправляем результат
   res.status(200).json({
     message: 'Карты успешно розданы',
-    userUpdates
+    userUpdates,
+    remainingDeckCards: session.deck.length,
+    totalUsedCards: session.usedCards.size
   });
 });
-
-// Функция для генерации новых карт
-function generateNewCards(count) {
-  const categories = ['ownership', 'values', 'scenarios', 'management', 'empty'];
-  const newCards = [];
-  
-  for (let i = 0; i < count; i++) {
-    // Выбираем случайную категорию
-    const category = categories[Math.floor(Math.random() * categories.length)];
-    
-    // Генерируем ID карты
-    const cardId = `${category}-${uuidv4().substring(0, 8)}`;
-    
-    // Создаем пустую карту с базовым вопросом (вместо полной базы карт)
-    let question = '';
-    let comment = '';
-    
-    switch (category) {
-      case 'ownership':
-        question = 'Как решить вопрос совладения: ' + ['доли при выходе', 'привлечение инвесторов', 'разделение прибыли'][Math.floor(Math.random() * 3)];
-        comment = '<p>Обсудите это важное решение в контексте вашего бизнеса. Результат: договоренность о принципах владения и принятия решений.</p>';
-        break;
-      case 'values':
-        question = 'Какие ценности важны для бизнеса: ' + ['этика', 'прозрачность', 'автономия', 'сотрудничество'][Math.floor(Math.random() * 4)];
-        comment = '<p>Обсудите ключевые ценности, которые будут направлять развитие вашего бизнеса. Результат: список принципов для всех решений компании.</p>';
-        break;
-      case 'scenarios':
-        question = 'Что делать, если ' + ['упадёт рынок', 'ключевой сотрудник уйдёт', 'сменится регулирование'][Math.floor(Math.random() * 3)];
-        comment = '<p>Разработайте план действий на случай непредвиденных обстоятельств. Результат: стратегия действий в критических ситуациях.</p>';
-        break;
-      case 'management':
-        question = 'Кто принимает решения о ' + ['найме', 'крупных расходах', 'новых продуктах', 'увольнении'][Math.floor(Math.random() * 4)];
-        comment = '<p>Определите четкие зоны ответственности в управлении. Результат: прописанные роли и полномочия в принятии решений.</p>';
-        break;
-      case 'empty':
-        question = 'Что для вас служит главной мотивацией в бизнесе?';
-        comment = '<p>Откройтесь и поделитесь вашими истинными мотивами ведения бизнеса. Результат: лучшее понимание целей и стремлений друг друга.</p>';
-        break;
-    }
-    
-    newCards.push({
-      id: cardId,
-      category: category,
-      question: question,
-      comment: comment
-    });
-  }
-  
-  return newCards;
-}
 
 // Получение истории ходов сессии
 app.get('/api/sessions/:sessionId/turns', (req, res) => {
