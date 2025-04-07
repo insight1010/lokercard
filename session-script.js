@@ -78,10 +78,49 @@ document.addEventListener('DOMContentLoaded', () => {
     // Флаг, указывающий, является ли пользователь организатором
     let isHost = false;
     
+    // Функция для восстановления ходов из localStorage
+    function restoreLocalTurns() {
+        try {
+            const savedTurns = localStorage.getItem(`session_turns_${sessionId}`);
+            if (savedTurns) {
+                const turns = JSON.parse(savedTurns);
+                console.log('Восстановлена история ходов из localStorage:', turns);
+                
+                // Отображаем восстановленные ходы
+                const turnsContainer = document.getElementById('turns-container');
+                if (turnsContainer) {
+                    turnsContainer.innerHTML = '';
+                }
+                
+                turns.forEach(turn => {
+                    // Преобразуем ход в нужный формат
+                    const formattedTurn = {
+                        userId: turn.userId,
+                        userName: turn.userName || 'Неизвестный игрок',
+                        cardQuestion: turn.cardQuestion || (turn.card && turn.card.question) || 'Вопрос недоступен',
+                        answer: turn.answer || 'Без ответа',
+                        timestamp: turn.timestamp || new Date().toISOString()
+                    };
+                    
+                    addTurnToLog(formattedTurn, false);
+                });
+                
+                showNotification('История ходов восстановлена из кэша', 'info');
+                return true;
+            }
+        } catch (error) {
+            console.error('Ошибка при восстановлении истории ходов из localStorage:', error);
+        }
+        return false;
+    }
+    
     // Добавляем функцию инициализации интерфейса хода при загрузке сессии
     async function initSession() {
         try {
             console.log(`Инициализация сессии: ${sessionId}, пользователь: ${userId}`);
+            
+            // Сначала проверяем, есть ли сохраненные ходы в localStorage
+            const hasLocalTurns = restoreLocalTurns();
             
             // Получение данных сессии с сервера
             const response = await fetch(`/api/sessions/${sessionId}`);
@@ -138,8 +177,16 @@ document.addEventListener('DOMContentLoaded', () => {
             // Отрисовываем карты в руке
             renderHandCards();
             
-            // Загружаем историю ходов
-            loadTurns();
+            // Загружаем ходы с сервера только если нет локальных или нужно обновить
+            try {
+                await loadTurns();
+            } catch (error) {
+                console.error('Ошибка при загрузке ходов с сервера:', error);
+                // Если у нас уже есть загруженные локальные ходы, не показываем ошибку
+                if (!hasLocalTurns) {
+                    showNotification('Не удалось загрузить историю ходов с сервера', 'warning');
+                }
+            }
             
             // Инициализируем Socket.io
             initSocket();
@@ -310,8 +357,15 @@ document.addEventListener('DOMContentLoaded', () => {
                         timestamp: lastMoveData.timestamp
                     };
                     
-                    // Добавляем ход в лог и обновляем localStorage (как новый ход)
+                    // Добавляем ход в лог (true означает, что это новый ход, который будет сохранен в localStorage)
                     addTurnToLog(turnData, true);
+                    
+                    // Также обновим данные ходов с сервера для полного обновления истории
+                    try {
+                        await loadTurns();
+                    } catch (e) {
+                        console.error('Не удалось обновить историю ходов с сервера после нового хода:', e);
+                    }
                     
                     showNotification(`${playerName} ответил на карту`, 'info');
                 }
@@ -585,69 +639,44 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             const turns = await response.json();
-            console.log('Загружена история ходов:', turns);
+            console.log('Загружена история ходов с сервера:', turns);
             
-            // Очищаем контейнер
-            const turnsContainer = document.getElementById('turns-container');
-            if (turnsContainer) {
-                turnsContainer.innerHTML = '';
+            // Проверяем, возвращает ли сервер пустой массив, и есть ли данные в localStorage
+            if ((!turns || turns.length === 0) && localStorage.getItem(`session_turns_${sessionId}`)) {
+                console.log('Сервер вернул пустые данные, используем существующие локальные ходы');
+                return; // Оставляем существующие ходы из localStorage
             }
             
-            // Сохраняем ходы в локальное хранилище
+            // Если данные с сервера не пустые, обновляем интерфейс и localStorage
             if (turns && turns.length > 0) {
+                // Очищаем контейнер
+                const turnsContainer = document.getElementById('turns-container');
+                if (turnsContainer) {
+                    turnsContainer.innerHTML = '';
+                }
+                
+                // Сохраняем ходы в локальное хранилище
                 localStorage.setItem(`session_turns_${sessionId}`, JSON.stringify(turns));
                 console.log('История ходов сохранена в localStorage');
-            }
-            
-            // Отображаем каждый ход
-            turns.forEach(turn => {
-                // Преобразуем ход в нужный формат
-                const formattedTurn = {
-                    userId: turn.userId,
-                    userName: turn.userName || 'Неизвестный игрок',
-                    cardQuestion: turn.cardQuestion || (turn.card && turn.card.question) || 'Вопрос недоступен',
-                    answer: turn.answer || 'Без ответа',
-                    timestamp: turn.timestamp || new Date().toISOString()
-                };
                 
-                addTurnToLog(formattedTurn, false);
-            });
+                // Отображаем каждый ход
+                turns.forEach(turn => {
+                    // Преобразуем ход в нужный формат
+                    const formattedTurn = {
+                        userId: turn.userId,
+                        userName: turn.userName || 'Неизвестный игрок',
+                        cardQuestion: turn.cardQuestion || (turn.card && turn.card.question) || 'Вопрос недоступен',
+                        answer: turn.answer || 'Без ответа',
+                        timestamp: turn.timestamp || new Date().toISOString()
+                    };
+                    
+                    addTurnToLog(formattedTurn, false);
+                });
+            }
             
         } catch (error) {
             console.error('Ошибка при загрузке истории ходов:', error);
-            showNotification('Не удалось загрузить историю ходов с сервера', 'warning');
-            
-            // Пробуем восстановить ходы из localStorage
-            try {
-                const savedTurns = localStorage.getItem(`session_turns_${sessionId}`);
-                if (savedTurns) {
-                    const turns = JSON.parse(savedTurns);
-                    console.log('Восстановлена история ходов из localStorage:', turns);
-                    
-                    // Отображаем восстановленные ходы
-                    const turnsContainer = document.getElementById('turns-container');
-                    if (turnsContainer) {
-                        turnsContainer.innerHTML = '';
-                    }
-                    
-                    turns.forEach(turn => {
-                        // Преобразуем ход в нужный формат
-                        const formattedTurn = {
-                            userId: turn.userId,
-                            userName: turn.userName || 'Неизвестный игрок',
-                            cardQuestion: turn.cardQuestion || (turn.card && turn.card.question) || 'Вопрос недоступен',
-                            answer: turn.answer || 'Без ответа',
-                            timestamp: turn.timestamp || new Date().toISOString()
-                        };
-                        
-                        addTurnToLog(formattedTurn, false);
-                    });
-                    
-                    showNotification('История ходов восстановлена из локального хранилища', 'info');
-                }
-            } catch (localStorageError) {
-                console.error('Ошибка при восстановлении истории ходов из localStorage:', localStorageError);
-            }
+            throw error; // Пробрасываем ошибку для обработки в initSession
         }
     }
     
