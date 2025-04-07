@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>СООСФЕРА - Деловая сессия</title>
+    <link rel="stylesheet" href="session-style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h2>Деловая сессия</h2>
+            <div id="session-info">
+                <p>Код сессии: <span id="session-code" class="highlight">...</span></p>
+                <p>Участники: <span id="user-count">0</span></p>
+            </div>
+        </header>
+
+        <main>
+            <div class="game-area">
+                <!-- Левая панель - карты в руке -->
+                <div class="hand-panel">
+                    <h3>Ваши карты</h3>
+                    <div id="hand-cards" class="hand-cards">
+                        <!-- Карты будут добавлены динамически -->
+                    </div>
+                </div>
+
+                <!-- Центральная панель - игровой стол -->
+                <div class="table-panel">
+                    <div id="active-card-container" class="active-card-container">
+                        <div id="no-active-card" class="no-active-card">
+                            <p>Выберите карту из руки или дождитесь хода другого участника</p>
+                        </div>
+                        <div id="active-card" class="active-card" style="display: none;">
+                            <!-- Активная карта будет добавлена динамически -->
+                        </div>
+                        <button id="open-answer-btn" class="btn primary-btn" style="display: none;">Ответить</button>
+                    </div>
+
+                    <div id="answer-form" class="answer-form" style="display: none;">
+                        <h4>Ваш ответ:</h4>
+                        <textarea id="answer-text" placeholder="Введите ваш ответ на вопрос..."></textarea>
+                        <button id="submit-answer-btn" class="btn primary-btn">Ответить</button>
+                        <button id="cancel-answer-btn" class="btn secondary-btn">Отмена</button>
+                    </div>
+                </div>
+
+                <!-- Правая панель - ходы и чат -->
+                <div class="log-panel">
+                    <div class="tabs">
+                        <button class="tab-btn active" data-tab="turns-log">Ходы</button>
+                        <button class="tab-btn" data-tab="chat">Чат</button>
+                    </div>
+
+                    <div class="tab-content">
+                        <!-- Лог ходов -->
+                        <div id="turns-log" class="tab-pane active">
+                            <div id="turns-container">
+                                <!-- Ходы будут добавлены динамически -->
+                            </div>
+                        </div>
+
+                        <!-- Чат -->
+                        <div id="chat" class="tab-pane">
+                            <div id="chat-messages">
+                                <!-- Сообщения будут добавлены динамически -->
+                            </div>
+                            <div class="chat-input">
+                                <input type="text" id="chat-message" placeholder="Введите сообщение...">
+                                <button id="send-message-btn" class="btn primary-btn">Отправить</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-controls">
+                <button id="end-session-btn" class="btn danger-btn">Завершить сессию</button>
+                <button id="leave-session-btn" class="btn secondary-btn">Покинуть сессию</button>
+                <div id="host-only-controls" style="display: none;">
+                    <button id="deal-cards-btn" class="btn accent-btn">Раздать ещё карты</button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Модальное окно результатов -->
+        <div id="results-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h3>Результаты сессии</h3>
+                <div id="session-summary">
+                    <!-- Здесь будет сводка по сессии -->
+                </div>
+                <div id="turn-list">
+                    <!-- Здесь будет список всех ходов -->
+                </div>
+                <div class="modal-actions">
+                    <button id="save-results-btn" class="btn primary-btn">Сохранить результаты</button>
+                    <button id="return-lobby-btn" class="btn secondary-btn">Вернуться в лобби</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Модальное окно для ответа -->
+        <div id="answer-modal" class="answer-modal">
+            <div class="answer-modal-content">
+                <h4>Ваш ответ:</h4>
+                <textarea id="modal-answer-text" placeholder="Введите ваш ответ на вопрос..."></textarea>
+                <div class="answer-modal-actions">
+                    <button id="modal-submit-answer-btn" class="btn primary-btn">Отправить</button>
+                    <button id="modal-cancel-answer-btn" class="btn secondary-btn">Отмена</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        // Получаем параметры из URL, изменяем названия параметров
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        // Проверяем, есть ли старые названия параметров
+        let newQueryParams = new URLSearchParams();
+        
+        // Если есть параметр id, переименовываем его в sessionId
+        if (urlParams.has('id')) {
+            newQueryParams.append('sessionId', urlParams.get('id'));
+        } else if (urlParams.has('sessionId')) {
+            // Если уже используется новое название, просто используем его
+            newQueryParams.append('sessionId', urlParams.get('sessionId'));
+        }
+        
+        // Если есть параметр user, переименовываем его в userId
+        if (urlParams.has('user')) {
+            newQueryParams.append('userId', urlParams.get('user'));
+        } else if (urlParams.has('userId')) {
+            // Если уже используется новое название, просто используем его
+            newQueryParams.append('userId', urlParams.get('userId'));
+        }
+        
+        // Если параметры изменились, перенаправляем на новый URL
+        if ((urlParams.has('id') || urlParams.has('user')) && 
+            !(urlParams.has('sessionId') && urlParams.has('userId'))) {
+            window.history.replaceState({}, '', `${window.location.pathname}?${newQueryParams.toString()}`);
+            console.log('URL параметры обновлены:', window.location.search);
+        }
+    </script>
+    <script src="session-script.js"></script>
+</body>
+</html> 

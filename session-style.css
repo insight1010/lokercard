@@ -1,0 +1,1279 @@
+/* Основные стили */
+:root {
+    --primary-color: #7263F3; /* Фиолетовый */
+    --primary-dark: #5847E3;
+    --secondary-color: #1E90FF; /* Голубой */
+    --accent-color: #FF7A59; /* Оранжевый акцент */
+    --success-color: #53B987; /* Зеленый */
+    --danger-color: #E85A5A; /* Красный */
+    --bg-color: #f8f9fe;
+    --card-bg: rgba(255, 255, 255, 0.15);
+    --text-color: #2D3748;
+    --border-radius: 16px;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    --glass-bg: rgba(255, 255, 255, 0.2);
+    --glass-border: 1px solid rgba(255, 255, 255, 0.3);
+    
+    /* Категории карт */
+    --ownership-color: #E85A5A; /* Красный */
+    --values-color: #4A89DC; /* Синий */
+    --scenarios-color: #FFBE46; /* Желтый */
+    --management-color: #53B987; /* Зеленый */
+    --empty-color: #6C757D; /* Серый */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    background-image: linear-gradient(135deg, #EDF2FF 0%, #E6E9FF 50%, #F0F4FF 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--secondary-color);
+    opacity: 0.85;
+    margin-bottom: 15px;
+}
+
+h3 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+h4 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    color: var(--text-color);
+}
+
+#session-info {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    font-size: 1rem;
+}
+
+.highlight {
+    font-weight: 700;
+    color: var(--primary-color);
+    font-size: 1.1em;
+    padding: 4px 10px;
+    background-color: rgba(114, 99, 243, 0.1);
+    border-radius: 8px;
+}
+
+/* Игровая область */
+.game-area {
+    display: grid;
+    grid-template-columns: 250px 1fr 350px;
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+/* Панель с картами в руке */
+.hand-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: var(--border-radius);
+    padding: 0;
+    box-shadow: var(--shadow),
+                inset 0 1px 1px rgba(255, 255, 255, 0.4);
+    border: var(--glass-border);
+    height: 70vh;
+    overflow-y: auto;
+    transition: all 0.4s ease;
+    position: relative;
+}
+
+.hand-panel:hover {
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+    transform: translateY(-5px);
+}
+
+/* Контейнер для заголовка с glass morphism эффектом */
+.hand-panel h3 {
+    position: sticky;
+    top: 0;
+    margin: 0;
+    padding: 20px 25px 20px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    z-index: 10;
+    color: var(--primary-color);
+    font-size: 1.8rem;
+    font-weight: 600;
+    text-align: center;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* Линия-граница под заголовком */
+.hand-panel h3::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, 
+                rgba(255, 255, 255, 0.1), 
+                rgba(114, 99, 243, 0.3), 
+                rgba(255, 255, 255, 0.1));
+    z-index: 11;
+}
+
+/* Стеклянный эффект области под заголовком, через который "проходят" карты */
+.hand-panel h3::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -15px;
+    width: 100%;
+    height: 15px;
+    background: linear-gradient(to bottom, 
+                rgba(255, 255, 255, 0.7) 0%, 
+                rgba(255, 255, 255, 0.1) 100%);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 9;
+    pointer-events: none;
+}
+
+.hand-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 25px 25px;
+    padding-top: 15px;
+}
+
+/* Карты в руке */
+.hand-card {
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    border-left: 5px solid var(--primary-color);
+    backdrop-filter: blur(5px);
+}
+
+.hand-card:hover {
+    transform: translateY(-5px) translateX(5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.hand-card-category {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--primary-color);
+}
+
+.hand-card-question {
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+/* Цвета категорий для карт */
+.hand-card[data-category="ownership"] {
+    border-left-color: var(--ownership-color);
+}
+
+.hand-card[data-category="ownership"] .hand-card-category {
+    color: var(--ownership-color);
+}
+
+.hand-card[data-category="values"] {
+    border-left-color: var(--values-color);
+}
+
+.hand-card[data-category="values"] .hand-card-category {
+    color: var(--values-color);
+}
+
+.hand-card[data-category="scenarios"] {
+    border-left-color: var(--scenarios-color);
+}
+
+.hand-card[data-category="scenarios"] .hand-card-category {
+    color: var(--scenarios-color);
+}
+
+.hand-card[data-category="management"] {
+    border-left-color: var(--management-color);
+}
+
+.hand-card[data-category="management"] .hand-card-category {
+    color: var(--management-color);
+}
+
+.hand-card[data-category="empty"] {
+    border-left-color: var(--empty-color);
+}
+
+.hand-card[data-category="empty"] .hand-card-category {
+    color: var(--empty-color);
+}
+
+/* Центральная панель - игровой стол */
+.table-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: var(--border-radius);
+    padding: 30px;
+    box-shadow: var(--shadow),
+                inset 0 1px 1px rgba(255, 255, 255, 0.4);
+    border: var(--glass-border);
+    display: flex;
+    flex-direction: column;
+    height: 70vh;
+    transition: all 0.4s ease;
+}
+
+.table-panel:hover {
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+}
+
+.active-card-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+#open-answer-btn {
+    align-self: center;
+    margin-top: 20px;
+    max-width: 550px;
+    width: 100%;
+}
+
+.no-active-card {
+    text-align: center;
+    color: rgba(45, 55, 72, 0.6);
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    max-width: 400px;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.active-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    width: 100%;
+    max-width: 550px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.4s ease;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.active-card:hover {
+    transform: scale(1.02);
+}
+
+.active-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 8px;
+    background-color: var(--primary-color);
+}
+
+.active-card-category {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: var(--primary-color);
+}
+
+.active-card-question {
+    font-size: 1.4rem;
+    font-weight: 500;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+.active-card-comment {
+    font-size: 1rem;
+    line-height: 1.6;
+    padding: 20px;
+    background-color: rgba(114, 99, 243, 0.05);
+    border-radius: 12px;
+    border-left: 3px solid var(--primary-color);
+    margin-bottom: 15px;
+}
+
+/* Цвета категорий для активной карты */
+.active-card[data-category="ownership"]::before {
+    background-color: var(--ownership-color);
+}
+
+.active-card[data-category="ownership"] .active-card-category {
+    color: var(--ownership-color);
+}
+
+.active-card[data-category="values"]::before {
+    background-color: var(--values-color);
+}
+
+.active-card[data-category="values"] .active-card-category {
+    color: var(--values-color);
+}
+
+.active-card[data-category="scenarios"]::before {
+    background-color: var(--scenarios-color);
+}
+
+.active-card[data-category="scenarios"] .active-card-category {
+    color: var(--scenarios-color);
+}
+
+.active-card[data-category="management"]::before {
+    background-color: var(--management-color);
+}
+
+.active-card[data-category="management"] .active-card-category {
+    color: var(--management-color);
+}
+
+.active-card[data-category="empty"]::before {
+    background-color: var(--empty-color);
+}
+
+.active-card[data-category="empty"] .active-card-category {
+    color: var(--empty-color);
+}
+
+/* Форма ответа */
+.answer-form {
+    margin-top: auto;
+    padding-top: 20px;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 5;
+}
+
+.answer-form .btn {
+    position: relative;
+    z-index: 10;
+}
+
+textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.5);
+    font-family: inherit;
+    font-size: 1rem;
+    margin-bottom: 15px;
+    resize: vertical;
+    transition: all 0.3s;
+    backdrop-filter: blur(5px);
+}
+
+textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(114, 99, 243, 0.2);
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+/* Чат */
+#chat {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+}
+
+#chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 8px;
+    padding: 0 5px 60px 5px;
+    min-height: 200px;
+    justify-content: flex-start;
+}
+
+.chat-message {
+    max-width: 85%;
+    padding: 8px 12px;
+    border-radius: 12px;
+    position: relative;
+}
+
+.chat-message.own {
+    align-self: flex-end;
+    background-color: rgba(114, 99, 243, 0.15);
+    border-bottom-right-radius: 0;
+    margin-right: 5px;
+    backdrop-filter: blur(5px);
+}
+
+.chat-message.other {
+    align-self: flex-start;
+    background-color: rgba(255, 255, 255, 0.35);
+    border-bottom-left-radius: 0;
+    margin-left: 5px;
+    backdrop-filter: blur(5px);
+}
+
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 3px;
+    font-size: 0.8rem;
+}
+
+.chat-username {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.chat-time {
+    color: rgba(45, 55, 72, 0.6);
+}
+
+.chat-text {
+    font-size: 0.95rem;
+}
+
+/* Скрываем форму ввода чата по умолчанию */
+.chat-input {
+    display: none;  /* Скрыта по умолчанию */
+    gap: 10px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 8px;
+    background: rgba(248, 249, 254, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+    z-index: 5;
+    width: 100%;
+}
+
+/* Показываем форму ввода только когда вкладка чата активна */
+#chat.active .chat-input {
+    display: flex;
+}
+
+.chat-input input {
+    flex: 3;
+    padding: 14px 15px;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.5);
+    font-family: inherit;
+    font-size: 0.95rem;
+    backdrop-filter: blur(5px);
+    min-width: 0;
+}
+
+.chat-input .primary-btn {
+    flex: 1;
+    padding: 10px 20px;
+    min-width: 120px;
+    max-width: 140px;
+}
+
+.chat-input input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(114, 99, 243, 0.2);
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+/* Игровые контролы */
+.game-controls {
+    display: flex;
+    gap: 15px;
+    justify-content: space-between;
+    margin-top: 20px;
+    position: relative;
+    z-index: 10;
+}
+
+#host-only-controls {
+    margin-left: auto;
+    display: flex;
+    gap: 15px;
+}
+
+/* Кнопки */
+.btn {
+    display: inline-block;
+    padding: 14px 28px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: center;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    white-space: nowrap;
+}
+
+.primary-btn {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: white;
+    box-shadow: 0 5px 15px rgba(114, 99, 243, 0.3);
+}
+
+.primary-btn:hover {
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(114, 99, 243, 0.4);
+}
+
+.secondary-btn {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: var(--primary-color);
+    border: 1px solid rgba(114, 99, 243, 0.3);
+    backdrop-filter: blur(5px);
+}
+
+.secondary-btn:hover {
+    background-color: rgba(114, 99, 243, 0.1);
+    transform: translateY(-2px);
+}
+
+.danger-btn {
+    background: linear-gradient(135deg, var(--danger-color), #d04a4a);
+    color: white;
+    box-shadow: 0 5px 15px rgba(232, 90, 90, 0.3);
+    min-width: 200px;
+}
+
+.danger-btn:hover {
+    background: linear-gradient(135deg, #d04a4a, var(--danger-color));
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(232, 90, 90, 0.4);
+}
+
+.accent-btn {
+    background: linear-gradient(135deg, var(--accent-color), #e5694d);
+    color: white;
+    box-shadow: 0 5px 15px rgba(255, 122, 89, 0.3);
+}
+
+.accent-btn:hover {
+    background: linear-gradient(135deg, #e5694d, var(--accent-color));
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(255, 122, 89, 0.4);
+}
+
+/* Модальное окно */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.modal-content {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(20px);
+    width: 100%;
+    max-width: 800px;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    animation: modalFadeIn 0.5s ease forwards;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: rgba(45, 55, 72, 0.6);
+    transition: all 0.3s;
+}
+
+.close-modal:hover {
+    color: var(--primary-color);
+    transform: rotate(90deg);
+}
+
+#session-summary {
+    margin-bottom: 25px;
+    padding: 20px;
+    background-color: rgba(114, 99, 243, 0.05);
+    border-radius: 12px;
+    border-left: 4px solid var(--primary-color);
+}
+
+#turn-list {
+    margin-bottom: 25px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 25px;
+}
+
+/* Уведомления */
+.notification {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    padding: 16px 24px;
+    background-color: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(15px);
+    color: var(--text-color);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    max-width: 320px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    z-index: 1000;
+}
+
+.notification.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.notification.error {
+    background-color: rgba(232, 90, 90, 0.2);
+    border-left: 4px solid var(--danger-color);
+}
+
+.notification.success {
+    background-color: rgba(83, 185, 135, 0.2);
+    border-left: 4px solid var(--success-color);
+}
+
+/* Адаптивность */
+@media (max-width: 1024px) {
+    .game-area {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+    }
+    
+    .hand-panel, .table-panel, .log-panel {
+        height: auto;
+        max-height: 50vh;
+    }
+    
+    .hand-cards {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    
+    .game-controls {
+        flex-wrap: wrap;
+    }
+    
+    .btn {
+        width: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+    
+    h2 {
+        font-size: 1.2rem;
+    }
+    
+    .hand-cards {
+        justify-content: center;
+    }
+    
+    .active-card {
+        padding: 20px;
+    }
+    
+    .active-card-question {
+        font-size: 1.2rem;
+    }
+    
+    .modal-content {
+        padding: 20px;
+    }
+    
+    .chat-input {
+        flex-direction: column;
+    }
+    
+    .game-controls {
+        flex-direction: column;
+    }
+    
+    #host-only-controls {
+        margin-left: 0;
+        width: 100%;
+    }
+}
+
+/* Панель логов и чата */
+.log-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: var(--border-radius);
+    padding: 8px;
+    box-shadow: var(--shadow),
+                inset 0 1px 1px rgba(255, 255, 255, 0.4);
+    border: var(--glass-border);
+    height: 70vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+.log-panel:hover {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* Табы в правой панели */
+.tabs {
+    display: flex;
+    margin-bottom: 4px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    flex-shrink: 0;
+}
+
+.tab-btn {
+    padding: 8px 15px;
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: 1.1rem;
+    cursor: pointer;
+    position: relative;
+    color: var(--text-color);
+    opacity: 0.65;
+    transition: color 0.3s;
+}
+
+.tab-btn.active {
+    opacity: 1;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: var(--primary-color);
+    border-radius: 3px 3px 0 0;
+}
+
+.tab-content {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+.tab-pane {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+/* Логи ходов */
+#turns-log {
+    height: 100%;
+    position: relative;
+}
+
+#turns-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px 8px 60px 8px;
+}
+
+/* Карточки ходов */
+.turn-item {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    padding: 15px;
+    border-left: 4px solid var(--secondary-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    margin-bottom: 0;
+    box-sizing: border-box;
+    width: 100%;
+    transition: background-color 0.2s ease;
+}
+
+.turn-item:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+.turn-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.turn-user {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.turn-time {
+    font-size: 0.85rem;
+    color: rgba(45, 55, 72, 0.6);
+}
+
+.turn-question {
+    margin-bottom: 12px;
+    font-size: 0.95rem;
+    color: #2D3748;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.turn-answer {
+    font-size: 0.9rem;
+    background-color: rgba(114, 99, 243, 0.05);
+    padding: 12px;
+    border-radius: 8px;
+    border-left: 3px solid var(--primary-color);
+    line-height: 1.5;
+    word-break: normal;
+    overflow-wrap: break-word;
+}
+
+/* Добавляем стиль для скроллбара, чтобы он был более заметен */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(114, 99, 243, 0.3);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(114, 99, 243, 0.5);
+}
+
+/* Анимация новых ходов для привлечения внимания к прокрутке */
+.turn-item.new-turn {
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.turn-item.new-turn.show {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Модальное окно для ответа */
+.answer-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.answer-modal.show {
+    display: flex;
+    opacity: 1;
+}
+
+.answer-modal-content {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 30px;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    position: relative;
+    animation: modalFadeIn 0.3s ease forwards;
+}
+
+.answer-modal h4 {
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    font-size: 1.4rem;
+}
+
+.answer-modal textarea {
+    height: 150px;
+    margin-bottom: 20px;
+}
+
+.answer-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+}
+
+@keyframes modalFadeIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Стили для индикатора хода */
+.turn-indicator {
+    background-color: #f0f0f0;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin: 10px 0;
+    font-size: 16px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.current-turn-user {
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+.my-turn {
+    color: #4caf50;
+    animation: pulse 1.5s infinite;
+}
+
+.skip-turn-btn {
+    background-color: #ff9800;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;
+    font-size: 14px;
+}
+
+.skip-turn-btn:hover {
+    background-color: #f57c00;
+}
+
+/* Анимация пульсации для "ваш ход" */
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+
+/* Стили для уведомлений */
+#notification-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    max-width: 300px;
+}
+
+.notification {
+    margin-top: 10px;
+    padding: 12px 15px;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    color: white;
+    font-size: 14px;
+    animation: slideIn 0.3s ease-out;
+}
+
+.notification.success {
+    background-color: #4caf50;
+}
+
+.notification.error {
+    background-color: #f44336;
+}
+
+.notification.info {
+    background-color: #2196f3;
+}
+
+.notification.warning {
+    background-color: #ff9800;
+}
+
+.notification.fadeout {
+    animation: fadeOut 0.5s forwards;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+/* Стили для отображения карт */
+.card-container {
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.card-container.interactive:hover {
+    transform: translateY(-5px);
+}
+
+.card-container.disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.turn-item {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    margin-bottom: 15px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.turn-item.show {
+    opacity: 1;
+}
+
+.turn-item .turn-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.turn-item .turn-user {
+    font-weight: bold;
+    color: #3f51b5;
+}
+
+.turn-item .turn-question {
+    font-style: italic;
+    margin-bottom: 8px;
+    color: #555;
+}
+
+.turn-item .turn-answer {
+    font-weight: 500;
+}
+
+/* Стили для модального окна ответа */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-content {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.modal h3 {
+    margin-top: 0;
+    color: #3f51b5;
+}
+
+.modal-question {
+    background-color: #f0f0f0;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+#modal-answer-text {
+    width: 100%;
+    height: 100px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    resize: vertical;
+    font-family: inherit;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btn-submit, .btn-cancel {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.btn-submit {
+    background-color: #4caf50;
+    color: white;
+}
+
+.btn-cancel {
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+.close-modal {
+    float: right;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #999;
+}
+
+.close-modal:hover {
+    color: #333;
+}
+
+.no-cards-message, .empty-hand-message {
+    text-align: center;
+    padding: 20px;
+    color: #777;
+    font-style: italic;
+}
+
+/* Стили для индикаторов онлайн/оффлайн статуса */
+.user-status {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-left: 5px;
+}
+
+.user-status.online {
+    background-color: #4CAF50;
+    box-shadow: 0 0 5px #4CAF50;
+}
+
+.user-status.offline {
+    background-color: #9E9E9E;
+} 

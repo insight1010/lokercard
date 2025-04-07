@@ -1,0 +1,1689 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Карточки по Грицу</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Карточки по Грицу</h1>
+        <p>Структурированный диалог для инвесторов и фаундеров</p>
+    </header>
+
+    <div class="controls">
+        <div class="search-container">
+            <input type="text" id="search" placeholder="Поиск по вопросам...">
+        </div>
+        <div class="category-filter">
+            <button class="category-btn active" data-category="all">Все</button>
+            <button class="category-btn" data-category="ownership">Со-владение</button>
+            <button class="category-btn" data-category="values">Маяки и вышки</button>
+            <button class="category-btn" data-category="scenarios">Сценарии</button>
+            <button class="category-btn" data-category="management">Со-управление</button>
+            <button class="category-btn" data-category="empty">Пустые карты</button>
+        </div>
+        <button id="random-btn">Случайный вопрос</button>
+    </div>
+
+    <div id="cards-container">
+        <!-- Категория: Со-владение (25 карточек) -->
+        <!-- Карточка 1 -->
+        <div class="card" data-category="ownership">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-владение</div>
+                    <div class="card-question">Как оценим бизнес, если один захочет выйти завтра?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите формулу оценки бизнеса и согласуйте сроки выплат при выходе партнёра. Это позволит избежать конфликтов в критический момент. Результат: прозрачный механизм оценки и сроки расчетов с выходящим партнёром.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 2 -->
+        <div class="card" data-category="ownership">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-владение</div>
+                    <div class="card-question">Пустим ли жену/брата в совет директоров?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Обсудите принципы включения родственников в управление компанией. Рассмотрите риски эмоциональных решений, конфликта интересов и возможные последствия семейных споров для бизнеса. Результат: четкая политика участия родственников в управлении.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 3 -->
+        <div class="card" data-category="ownership">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-владение</div>
+                    <div class="card-question">Будем платить дивиденды или реинвестировать?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Согласуйте политику распределения прибыли между реинвестированием и выплатой дивидендов. Обсудите процент выплат, периодичность и механизм принятия решений в этом вопросе. Результат: прозрачная финансовая политика, учитывающая интересы всех партнёров.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 4 -->
+        <div class="card" data-category="ownership">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-владение</div>
+                    <div class="card-question">Как делить доли, если я вложу в 2 раза больше?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Разработайте формулу перераспределения долей в случае диспропорциональных инвестиций. Учтите как денежные вложения, так и ценность других вкладов (время, экспертиза, связи). Результат: справедливая модель корректировки долей при неравных вложениях.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 5 -->
+        <div class="card" data-category="ownership">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-владение</div>
+                    <div class="card-question">Продадим ли долю китайским инвесторам?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Обсудите принципы привлечения иностранных инвесторов и возможные ограничения. Определите приемлемые лимиты отчуждения долей и последствия нарушения договоренностей. Результат: согласованная стратегия взаимодействия с иностранным капиталом.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 6 -->
+        <div class="card" data-category="ownership">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-владение</div>
+                    <div class="card-question">Кто получит право первого отказа на выкуп?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите, кто будет иметь преимущественное право выкупа доли при выходе партнёра, сроки принятия решения и метод оценки стоимости доли. Это защитит компанию от нежелательных третьих лиц. Результат: прозрачная процедура реализации права первого отказа.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 7 -->
+        <div class="card" data-category="ownership">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-владение</div>
+                    <div class="card-question">Что будет с долей, если партнёр умрет?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Обсудите механизм наследования доли в бизнесе и возможные ограничения для наследников. Определите, будет ли обязательный выкуп доли у наследников и на каких условиях. Результат: защита бизнеса в случае ухода из жизни одного из партнёров.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 8 -->
+        <div class="card" data-category="ownership">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-владение</div>
+                    <div class="card-question">Разрешим ли залог доли под кредит?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Рассмотрите возможность использования долей компании в качестве залога по личным обязательствам. Определите ограничения, процедуру согласования и последствия для нарушителей договоренностей. Результат: минимизация рисков потери контроля над бизнесом.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 9 -->
+        <div class="card" data-category="ownership">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-владение</div>
+                    <div class="card-question">Как делить интеллектуальную собственность?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите, кто будет обладать правами на интеллектуальную собственность, созданную в рамках компании. Обсудите возможные роялти и условия использования IP при выходе создателя из бизнеса. Результат: прозрачная политика управления интеллектуальными активами.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 10 -->
+        <div class="card" data-category="ownership">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-владение</div>
+                    <div class="card-question">Будем ли платить друг другу проценты с вложений?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Рассмотрите возможность выплаты процентов партнёрам за вложенные в бизнес средства. Определите ставку, условия выплат и приоритетность возврата инвестиций. Результат: сбалансированный механизм стимулирования инвестиций в компанию.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 11 -->
+        <div class="card" data-category="ownership">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-владение</div>
+                    <div class="card-question">Что если один из нас объявит себя банкротом?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Согласуйте порядок действий при банкротстве одного из партнёров. Обсудите механизмы защиты доли от кредиторов и условия возможного выкупа доли обанкротившегося партнёра. Результат: защита бизнеса от претензий третьих лиц.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 12 -->
+        <div class="card" data-category="ownership">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-владение</div>
+                    <div class="card-question">Можно ли передать долю детям без согласия?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите правила наследования и передачи долей ближайшим родственникам. Установите ограничения, условия и возможные санкции за нарушение договоренностей. Результат: баланс между семейными интересами и интересами бизнеса.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 13 -->
+        <div class="card" data-category="ownership">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-владение</div>
+                    <div class="card-question">Как оценить неденежный вклад (связи, патенты)?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Разработайте методику оценки нематериальных вкладов в бизнес. Определите критерии и привлекайте независимых экспертов для объективной оценки. Результат: справедливое распределение долей с учетом всех типов вкладов в компанию.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 14 -->
+        <div class="card" data-category="ownership">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-владение</div>
+                    <div class="card-question">Что будет, если доля одного арестуют за долги?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Обсудите варианты действий при аресте доли партнёра за личные долги. Рассмотрите возможность выкупа этой доли до торгов и процедуру определения цены. Результат: защита компании от рисков смены собственника через исполнительное производство.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 15 -->
+        <div class="card" data-category="ownership">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-владение</div>
+                    <div class="card-question">Разрешим ли партнёру открыть параллельный бизнес?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите политику в отношении параллельного предпринимательства партнёров. Установите условия, ограничения и возможные компенсации компании при нарушении договоренностей. Результат: ясные правила диверсификации деятельности партнёров.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 16 -->
+        <div class="card" data-category="ownership">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-владение</div>
+                    <div class="card-question">Как делить прибыль от продажи компании?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Согласуйте принципы распределения выручки от продажи бизнеса. Определите соотношение долей, учет налоговых обязательств и возможные бонусы основателям. Результат: предсказуемый механизм распределения средств при успешном выходе.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 17 -->
+        <div class="card" data-category="ownership">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-владение</div>
+                    <div class="card-question">Что если один из нас сольёт коммерческую тайну?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите меры ответственности за разглашение коммерческой тайны. Обсудите размер компенсаций и возможность принудительного выкупа доли нарушителя. Результат: механизм защиты конфиденциальной информации компании.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 18 -->
+        <div class="card" data-category="ownership">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-владение</div>
+                    <div class="card-question">Будем ли страховать доли от форс-мажоров?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Обсудите возможность страхования долей и бизнеса в целом от непредвиденных обстоятельств. Определите страховые случаи, компанию-страховщика и распределение расходов. Результат: снижение рисков потери бизнеса из-за форс-мажорных ситуаций.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 19 -->
+        <div class="card" data-category="ownership">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-владение</div>
+                    <div class="card-question">Как изменить устав без единогласия?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Согласуйте порядок внесения изменений в устав компании. Определите минимальный порог голосов и перечень вопросов, требующих единогласного решения. Результат: гибкая система управления с защитой ключевых интересов всех партнёров.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 20 -->
+        <div class="card" data-category="ownership">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-владение</div>
+                    <div class="card-question">Что если партнёр попадёт под санкции?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Разработайте план действий на случай включения партнёра в санкционные списки. Рассмотрите варианты выкупа доли или приостановления прав санкционного партнёра. Результат: защита бизнеса от репутационных и юридических рисков.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 21 -->
+        <div class="card" data-category="ownership">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-владение</div>
+                    <div class="card-question">Можно ли требовать выкупа доли без причины?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите, возможен ли выкуп доли без объяснения причин, и если да, то с какой периодичностью. Установите процедуру оценки стоимости доли и сроки выплат. Результат: прозрачный механизм выхода из бизнеса для партнёров.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 22 -->
+        <div class="card" data-category="ownership">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-владение</div>
+                    <div class="card-question">Как делить убытки прошлых лет?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Согласуйте формулу распределения накопленных убытков между партнёрами. Определите возможность рассрочки в покрытии убытков и последствия неисполнения обязательств. Результат: справедливое разделение финансовой ответственности за прошлые периоды.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 23 -->
+        <div class="card" data-category="ownership">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-владение</div>
+                    <div class="card-question">Будем ли платить премию за выход из кризиса?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Обсудите возможность вознаграждения партнёров за успешное антикризисное управление. Определите критерии успеха, размер премии и источник выплат. Результат: дополнительная мотивация для преодоления сложных периодов в жизни компании.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 24 -->
+        <div class="card" data-category="ownership">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-владение</div>
+                    <div class="card-question">Что если партнёр станет недееспособным?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите порядок действий при потере партнёром дееспособности. Согласуйте процедуру назначения опекуна и объем его полномочий в управлении компанией. Результат: механизм защиты интересов недееспособного партнёра и компании в целом.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 25 -->
+        <div class="card" data-category="ownership">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-владение</div>
+                    <div class="card-question">Как расторгнуть партнёрство без суда?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Разработайте досудебную процедуру расторжения партнёрских отношений. Определите нейтрального арбитра, сроки урегулирования и санкции за срыв договоренностей. Результат: цивилизованный механизм "развода" партнёров с минимальными потерями для бизнеса.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Категория: Маяки и вышки (20 карточек) -->
+        <!-- Карточка 1 -->
+        <div class="card" data-category="values">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Маяки и вышки</div>
+                    <div class="card-question">Можно ли совмещать с конкурентом?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Обсудите возможность сотрудничества с конкурирующими компаниями. Определите границы допустимого взаимодействия, условия информирования партнёров и возможные санкции за нарушение договоренностей. Результат: четкая политика взаимодействия с конкурентами.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 2 -->
+        <div class="card" data-category="values">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Маяки и вышки</div>
+                    <div class="card-question">Будем скрывать убытки от семьи?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите политику прозрачности финансовых результатов компании для семей партнёров. Обсудите частоту и формат отчетности, границы конфиденциальности. Результат: согласованный подход к коммуникации финансового положения бизнеса в семье.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 3 -->
+        <div class="card" data-category="values">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Маяки и вышки</div>
+                    <div class="card-question">Ваш личный потолок по долгам бизнеса?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите максимальную сумму личной ответственности каждого партнёра по обязательствам бизнеса. Это важное решение поможет установить границы финансового риска и психологический комфорт. Результат: четкие лимиты финансовой ответственности для каждого участника.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 4 -->
+        <div class="card" data-category="values">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Маяки и вышки</div>
+                    <div class="card-question">Допустимо ли давать взятки для сделок?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Обсудите этические границы в переговорах с контрагентами и представителями власти. Определите, что является неприемлемым в вопросах коррупции, и какие последствия ждут того, кто нарушит договоренности. Результат: этический кодекс компании в вопросах взаимодействия с внешней средой.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 5 -->
+        <div class="card" data-category="values">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Маяки и вышки</div>
+                    <div class="card-question">Можно ли публично критиковать партнёра?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Обсудите допустимость и формат публичной критики партнёров. Определите каналы и способы коммуникации разногласий, а также последствия за нарушение этических норм. Результат: политика внешних коммуникаций, защищающая репутацию компании и партнёров.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 6 -->
+        <div class="card" data-category="values">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Маяки и вышки</div>
+                    <div class="card-question">Как реагировать на неэтичные просьбы клиента?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите критерии и процедуру принятия решений в этически сложных ситуациях с клиентами. Обсудите приоритеты между коммерческой выгодой и моральными принципами. Результат: алгоритм действий при возникновении этических дилемм.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 7 -->
+        <div class="card" data-category="values">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Маяки и вышки</div>
+                    <div class="card-question">Разгласим ли конфликт с партнёром перед командой?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Обсудите политику информирования команды о внутренних конфликтах между партнёрами. Определите уровень прозрачности, формат коммуникации и последствия за несогласованное разглашение. Результат: согласованный подход к прозрачности внутренних отношений.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 8 -->
+        <div class="card" data-category="values">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Маяки и вышки</div>
+                    <div class="card-question">Можно ли использовать личные связи партнёра?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите правила использования личных контактов партнёров в интересах бизнеса. Обсудите вопросы компенсации, признания вклада и возможных ограничений. Результат: сбалансированная политика использования нематериальных активов партнёров.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 9 -->
+        <div class="card" data-category="values">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Маяки и вышки</div>
+                    <div class="card-question">Ваши границы в общении с сотрудниками?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите допустимые и недопустимые формы взаимодействия с сотрудниками компании. Обсудите вопросы личных отношений, стиля коммуникации, субординации и последствия нарушения этих норм. Результат: этический кодекс внутренних коммуникаций.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 10 -->
+        <div class="card" data-category="values">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Маяки и вышки</div>
+                    <div class="card-question">Станете ли врать ради спасения репутации?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Обсудите границы допустимости искажения информации в кризисных ситуациях. Определите случаи, когда правда является абсолютным приоритетом, и возможные последствия разных стратегий коммуникации. Результат: согласованная политика кризисных коммуникаций.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 11 -->
+        <div class="card" data-category="values">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Маяки и вышки</div>
+                    <div class="card-question">Как поступать, если партнёр нарушил устную договорённость?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Согласуйте процедуру реагирования на нарушение неформальных договоренностей между партнёрами. Определите градацию серьезности нарушений и соответствующие меры воздействия. Результат: механизм сохранения доверия и урегулирования конфликтов.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 12 -->
+        <div class="card" data-category="values">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Маяки и вышки</div>
+                    <div class="card-question">Можно ли нанимать родственников без согласия?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите политику найма родственников партнёров. Обсудите процедуру согласования, ограничения по должностям, вопросы подчиненности и возможные санкции за нарушение договоренностей. Результат: прозрачные правила работы с родственниками в компании.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 13 -->
+        <div class="card" data-category="values">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Маяки и вышки</div>
+                    <div class="card-question">Что для вас "предательство" в партнёрстве?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите, какие действия каждый из партнёров считает неприемлемыми и разрушающими доверие. Согласуйте последствия таких действий — от необходимости восстановления доверия до полного разрыва отношений. Результат: чёткое понимание "красных линий" в партнёрстве.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 14 -->
+        <div class="card" data-category="values">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Маяки и вышки</div>
+                    <div class="card-question">Допустимо ли скрывать ошибки от партнёра?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Согласуйте политику в отношении признания ошибок. Определите критерии, по которым ошибки должны быть обязательно раскрыты, и возможные последствия за сокрытие информации. Результат: культура открытости и ответственного отношения к ошибкам.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 15 -->
+        <div class="card" data-category="values">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Маяки и вышки</div>
+                    <div class="card-question">Как делить личные гарантии по кредитам?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите принципы разделения ответственности при предоставлении личных гарантий по обязательствам компании. Согласуйте максимальные суммы, условия предоставления и механизмы компенсации рисков. Результат: справедливое распределение финансовых рисков между партнёрами.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 16 -->
+        <div class="card" data-category="values">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Маяки и вышки</div>
+                    <div class="card-question">Станете ли нарушать закон ради прибыли?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Обсудите пределы допустимости "серых" схем и нарушений законодательства в деятельности компании. Определите, как будет приниматься решение в ситуации выбора между легальностью и прибылью. Результат: согласованная позиция по юридическим рискам бизнеса.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 17 -->
+        <div class="card" data-category="values">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Маяки и вышки</div>
+                    <div class="card-question">Можно ли обсуждать партнёрство в соцсетях?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Согласуйте политику публичных высказываний о партнёрстве и бизнесе в социальных сетях. Определите границы откровенности, темы, требующие предварительного согласования, и санкции за нарушения. Результат: правила внешних коммуникаций партнёров в цифровой среде.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 18 -->
+        <div class="card" data-category="values">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Маяки и вышки</div>
+                    <div class="card-question">Как реагировать на личный долг партнёра?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите, будет ли компания помогать партнёру в погашении личных финансовых обязательств. Согласуйте лимиты, условия и механизмы такой поддержки, если она возможна. Результат: четкая политика финансовой взаимопомощи партнёров.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 19 -->
+        <div class="card" data-category="values">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Маяки и вышки</div>
+                    <div class="card-question">Ваша позиция по алкоголю/наркотикам в работе?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите политику компании в отношении употребления алкоголя и других веществ на рабочем месте и во время рабочих мероприятий. Согласуйте санкции за нарушение этих правил. Результат: четкие правила, обеспечивающие безопасность и эффективность работы.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 20 -->
+        <div class="card" data-category="values">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Маяки и вышки</div>
+                    <div class="card-question">Что для вас абсолютно неприемлемо в партнёре?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Каждый партнёр должен четко обозначить, какие личностные качества или действия являются для него абсолютно неприемлемыми в деловых отношениях. Это поможет избежать фундаментальных конфликтов в будущем. Результат: понимание личных границ и ожиданий каждого партнёра.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Категория: Сценарии (30 карточек) -->
+        <!-- Карточка 1 -->
+        <div class="card" data-category="scenarios">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Сценарии</div>
+                    <div class="card-question">Если я сломаю позвоночник, что с моей долей?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Разработайте протокол действий на случай долгосрочной недееспособности партнёра. Обсудите возможность временной заморозки обязательств или выкупа доли, определите условия и сроки. Результат: механизм защиты интересов травмированного партнёра и бизнеса в целом.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 2 -->
+        <div class="card" data-category="scenarios">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Сценарии</div>
+                    <div class="card-question">Если роботы заменят 80% штата, как изменим доли?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите, как будет пересматриваться распределение долей в случае радикальной автоматизации бизнеса. Учтите вклад партнёров в технологическую трансформацию и новые роли в изменившейся компании. Результат: формула адаптации структуры собственности к технологическим изменениям.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 3 -->
+        <div class="card" data-category="scenarios">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Сценарии</div>
+                    <div class="card-question">Если вы попадёте в тюрьму, кто будет управлять?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите механизм передачи управленческих функций в случае лишения свободы одного из партнёров. Назначьте доверенное лицо, определите объем его полномочий и процедуру согласования важных решений. Результат: план обеспечения непрерывности управления компанией.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 4 -->
+        <div class="card" data-category="scenarios">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Сценарии</div>
+                    <div class="card-question">Если наши жёны начнут войну из-за бизнеса?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Обсудите стратегию действий в случае конфликта между членами семей партнёров по поводу бизнеса. Определите процедуру медиации, возможные варианты разделения активов и другие механизмы деэскалации. Результат: защита бизнеса от разрушительного влияния личных конфликтов.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 5 -->
+        <div class="card" data-category="scenarios">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Сценарии</div>
+                    <div class="card-question">Если компанию внесут в санкционный список?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Разработайте план действий на случай включения компании в санкционные списки. Рассмотрите варианты реструктуризации, ребрендинга, смены юрисдикции и сохранения основных активов. Результат: стратегия выживания бизнеса в условиях внешних ограничений.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 6 -->
+        <div class="card" data-category="scenarios">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Сценарии</div>
+                    <div class="card-question">Если ключевой клиент уйдёт к конкуренту?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите стратегию реагирования на потерю ключевого клиента. Рассмотрите возможность ценовых уступок, диверсификации клиентской базы и анализа причин ухода для предотвращения подобных ситуаций в будущем. Результат: план минимизации зависимости от отдельных клиентов.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 7 -->
+        <div class="card" data-category="scenarios">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Сценарии</div>
+                    <div class="card-question">Если хакеры украдут все данные?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Разработайте протокол реагирования на утечку данных. Определите ответственных лиц, процедуру уведомления клиентов, механизмы компенсации ущерба и меры по восстановлению репутации. Результат: готовность к управлению киберкризисом с минимальными потерями.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 8 -->
+        <div class="card" data-category="scenarios">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Сценарии</div>
+                    <div class="card-question">Если налоговая заблокирует счета?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Согласуйте план действий на случай блокировки корпоративных счетов. Определите альтернативные источники финансирования, расставьте приоритеты платежей и распределите ответственность за разблокировку. Результат: готовность к временному функционированию в условиях ограниченного доступа к финансам.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 9 -->
+        <div class="card" data-category="scenarios">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Сценарии</div>
+                    <div class="card-question">Если один из нас влюбится в сотрудника?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите политику в отношении личных связей партнёров с сотрудниками компании. Рассмотрите варианты — от полного запрета до регламентации с обязательным информированием других партнёров. Результат: правила, минимизирующие риски конфликта интересов и негативного влияния на коллектив.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 10 -->
+        <div class="card" data-category="scenarios">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Сценарии</div>
+                    <div class="card-question">Если рынок рухнет из-за кризиса?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Разработайте антикризисную стратегию для компании. Определите критерии принятия решений о сокращении персонала, изменении бизнес-модели или переходе в другие ниши. Результат: план действий, позволяющий сохранить ядро бизнеса в условиях экономического спада.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 11 -->
+        <div class="card" data-category="scenarios">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Сценарии</div>
+                    <div class="card-question">Если партнёр присвоит деньги компании?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Согласуйте процедуру действий в случае выявления факта присвоения средств компании. Определите пороговые суммы для разных уровней реагирования, возможность выкупа доли нарушителя и критерии для обращения в правоохранительные органы. Результат: механизм защиты от финансовых злоупотреблений.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 12 -->
+        <div class="card" data-category="scenarios">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Сценарии</div>
+                    <div class="card-question">Если пожар уничтожит офис?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Разработайте план действий на случай физического уничтожения рабочего пространства. Определите страховую компанию, процедуру восстановления документации и данных, организацию временной работы. Результат: готовность к быстрому восстановлению операционной деятельности после форс-мажора.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 13 -->
+        <div class="card" data-category="scenarios">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Сценарии</div>
+                    <div class="card-question">Если партнёр перестанет отвечать на звонки?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Согласуйте протокол действий на случай исчезновения партнёра из коммуникационного поля. Определите временные рамки для принятия разных мер — от поиска альтернативных каналов связи до передачи полномочий третьему лицу. Результат: минимизация рисков для бизнеса от коммуникационного срыва.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 14 -->
+        <div class="card" data-category="scenarios">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Сценарии</div>
+                    <div class="card-question">Если ИИ создаст продукт, который нас заменит?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Обсудите стратегию компании в случае появления конкурирующего ИИ-продукта. Рассмотрите варианты — от судебного оспаривания до попытки приобретения технологии или полной трансформации бизнеса. Результат: готовность к адаптации в условиях технологической революции.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 15 -->
+        <div class="card" data-category="scenarios">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Сценарии</div>
+                    <div class="card-question">Если один из нас умрёт во время сделки?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Разработайте процедуру завершения важных сделок в случае внезапной смерти ключевого участника. Определите передачу полномочий наследнику или другому доверенному лицу, механизмы юридического оформления и продолжения бизнес-процессов. Результат: обеспечение непрерывности критичных бизнес-операций.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 16 -->
+        <div class="card" data-category="scenarios">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Сценарии</div>
+                    <div class="card-question">Если нас обвинят в мошенничестве?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Согласуйте план действий на случай обвинений в мошенничестве или других правонарушениях. Определите стратегию юридической защиты, бюджет на адвокатов, распределение ответственности и коммуникационную стратегию. Результат: готовность к защите репутации и интересов компании.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 17 -->
+        <div class="card" data-category="scenarios">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Сценарии</div>
+                    <div class="card-question">Если партнёр присоединится к секте?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Обсудите план действий в случае радикального изменения мировоззрения партнёра, влияющего на бизнес-решения. Определите критерии для вмешательства, процедуру выкупа доли или отстранения от управления при угрозе для компании. Результат: защита бизнеса от идеологических рисков.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 18 -->
+        <div class="card" data-category="scenarios">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Сценарии</div>
+                    <div class="card-question">Если госорганы потребуют закрыться?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Разработайте план реагирования на требование о прекращении деятельности со стороны государственных органов. Рассмотрите варианты релокации, изменения формата деятельности, юридической защиты или цивилизованного закрытия с минимизацией потерь. Результат: готовность к экстренной трансформации или завершению бизнеса.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 19 -->
+        <div class="card" data-category="scenarios">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Сценарии</div>
+                    <div class="card-question">Если партнёр начнёт пить/употреблять наркотики?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Согласуйте политику в отношении партнёра с зависимостью, влияющей на работу. Рассмотрите возможность оплаты реабилитации, временного отстранения от управления или выкупа доли в случае отказа от лечения. Результат: баланс между поддержкой партнёра и защитой бизнеса.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 20 -->
+        <div class="card" data-category="scenarios">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Сценарии</div>
+                    <div class="card-question">Если наш продукт убьёт клиента?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Разработайте протокол действий в случае причинения серьезного вреда клиенту вашим продуктом. Определите процедуру расследования, страховое покрытие, механизмы компенсации и коммуникационную стратегию. Результат: минимизация репутационных и финансовых потерь при сохранении человечности.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 21 -->
+        <div class="card" data-category="scenarios">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Сценарии</div>
+                    <div class="card-question">Если партнёр объявит себя банкротом?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите механизмы защиты доли обанкротившегося партнёра от кредиторов. Рассмотрите варианты выкупа доли другими партнёрами или передачи в доверительное управление. Результат: сохранение контроля над бизнесом в случае личного банкротства одного из собственников.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 22 -->
+        <div class="card" data-category="scenarios">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Сценарии</div>
+                    <div class="card-question">Если в стране начнётся революция?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Разработайте план действий на случай политической нестабильности в стране присутствия. Определите процедуру вывода активов, обеспечения безопасности сотрудников, сохранения данных и возможной релокации бизнеса. Результат: готовность к экстренной эвакуации бизнеса из зоны политических рисков.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 23 -->
+        <div class="card" data-category="scenarios">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Сценарии</div>
+                    <div class="card-question">Если партнёр изменит гендер и имя?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите процедуру юридического и коммуникационного сопровождения гендерного перехода партнёра. Обсудите переоформление документов, коммуникацию с клиентами и сотрудниками, стратегию минимизации потенциальных репутационных рисков. Результат: поддержка личного выбора при сохранении бизнес-интересов.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 24 -->
+        <div class="card" data-category="scenarios">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Сценарии</div>
+                    <div class="card-question">Если ИИ-алгоритм примет решение против нас?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Согласуйте план действий в случае дискриминирующего решения ИИ-алгоритма в отношении вашей компании. Определите стратегию оспаривания, привлечения независимых экспертов, поиска альтернативных решений или адаптации к новым условиям. Результат: готовность к взаимодействию с алгоритмическими регуляторами.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 25 -->
+        <div class="card" data-category="scenarios">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Сценарии</div>
+                    <div class="card-question">Если ключевой поставщик обанкротится?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Разработайте план обеспечения непрерывности бизнеса в случае потери критичного поставщика. Определите альтернативных поставщиков, стратегию создания резервных запасов и бюджет на экстренную закупку аналогов. Результат: устойчивость цепочки поставок к внешним шокам.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 26 -->
+        <div class="card" data-category="scenarios">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Сценарии</div>
+                    <div class="card-question">Если партнёр начнёт финансировать оппозицию?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Обсудите риски для бизнеса в случае политической активности партнёра. Определите критерии оценки репутационных угроз, процедуру разделения личной позиции от корпоративной и возможные механизмы компенсации ущерба компании. Результат: защита бизнеса от политических рисков.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 27 -->
+        <div class="card" data-category="scenarios">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Сценарии</div>
+                    <div class="card-question">Если наш продукт станет вирусным мемом?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Разработайте стратегию использования внезапной интернет-популярности продукта, даже если она носит иронический характер. Определите подходы к монетизации внимания, коммуникационную стратегию и меры по укреплению бренда. Результат: превращение спонтанной популярности в долгосрочное преимущество.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 28 -->
+        <div class="card" data-category="scenarios">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Сценарии</div>
+                    <div class="card-question">Если нас купит корпора-монстр?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите условия, на которых основатели готовы продать бизнес крупной корпорации. Обсудите вопросы сохранения долей, управленческой автономии, защиты команды и вероятность полного выхода. Результат: согласованная позиция партнёров по потенциальной сделке M&A.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 29 -->
+        <div class="card" data-category="scenarios">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Сценарии</div>
+                    <div class="card-question">Если искусственный интеллект заменит партнёра?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Обсудите сценарий, при котором функции одного из партнёров могут быть полностью автоматизированы. Определите справедливую компенсацию за созданную ценность, возможность сохранения доли и новую роль в трансформированной компании. Результат: готовность к технологической трансформации управления.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 30 -->
+        <div class="card" data-category="scenarios">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Сценарии</div>
+                    <div class="card-question">Если мы возненавидим друг друга?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Разработайте процедуру "цивилизованного развода" партнёров в случае непреодолимых личных противоречий. Определите нейтрального арбитра, сроки разрешения конфликта, механизмы разделения бизнеса или выкупа долей. Результат: способность сохранить бизнес даже при разрушении личных отношений.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Категория: Со-управление -->
+        <!-- Карточка 1 -->
+        <div class="card" data-category="management">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-управление</div>
+                    <div class="card-question">Кто моет полы, если уборщица не пришла?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Обсудите распределение неприятных или непредвиденных обязанностей в компании. Определите принцип решения подобных ситуаций и возможные санкции за уклонение от общих задач. Результат: культура совместной ответственности за базовые процессы компании.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 2 -->
+        <div class="card" data-category="management">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-управление</div>
+                    <div class="card-question">Можно ли тратить 500к без согласования?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите лимиты самостоятельных финансовых решений для партнёров и ключевых руководителей. Согласуйте процедуру согласования расходов выше лимита и санкции за нарушение финансовой дисциплины. Результат: прозрачный механизм контроля расходов.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 3 -->
+        <div class="card" data-category="management">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-управление</div>
+                    <div class="card-question">Будете ли вы работать в отпуске?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Согласуйте политику доступности партнёров во время отпуска. Определите условия экстренной связи, ожидания по проверке почты, компенсацию за вынужденную работу в отпуске. Результат: баланс между правом на отдых и потребностями бизнеса.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 4 -->
+        <div class="card" data-category="management">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-управление</div>
+                    <div class="card-question">Кто отвечает за увольнение сотрудников?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите процедуру и ответственных за принятие решений об увольнении сотрудников разного уровня. Согласуйте необходимость согласования таких решений с партнёрами и процесс коммуникации с командой. Результат: справедливая и предсказуемая система кадровых решений.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 5 -->
+        <div class="card" data-category="management">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-управление</div>
+                    <div class="card-question">Как часто будем проводить планерки?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите оптимальную частоту, формат и продолжительность регулярных встреч управленческой команды. Согласуйте обязательность участия, процедуру подготовки и правила фиксации решений. Результат: эффективная система координации управленческих действий.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 6 -->
+        <div class="card" data-category="management">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-управление</div>
+                    <div class="card-question">Можно ли менять KPI в середине квартала?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Согласуйте политику изменения ключевых показателей эффективности в течение отчетного периода. Определите исключительные обстоятельства, процедуру согласования и компенсации за "изменение правил игры". Результат: стабильная и мотивирующая система оценки результатов.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 7 -->
+        <div class="card" data-category="management">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-управление</div>
+                    <div class="card-question">Кто подписывает договоры с поставщиками?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите круг лиц, имеющих право подписи договоров с поставщиками разного уровня значимости. Согласуйте лимиты самостоятельных решений и процедуру эскалации для крупных или стратегических контрактов. Результат: эффективный баланс между оперативностью и контролем.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 8 -->
+        <div class="card" data-category="management">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-управление</div>
+                    <div class="card-question">Как делить премии среди топ-менеджеров?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Разработайте прозрачную формулу распределения премиального фонда между руководителями высшего звена. Определите баланс между индивидуальными и командными результатами, а также условия лишения премии. Результат: справедливая система мотивации управленческой команды.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 9 -->
+        <div class="card" data-category="management">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-управление</div>
+                    <div class="card-question">Кто контролирует расход канцелярии?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите ответственных за контроль рутинных расходов и установите разумные лимиты потребления ресурсов на одного сотрудника. Это позволит избежать необоснованных трат и создаст культуру бережливости. Результат: оптимизация операционных расходов компании.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 10 -->
+        <div class="card" data-category="management">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-управление</div>
+                    <div class="card-question">Можно ли отменить решение партнёра?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Согласуйте процедуру пересмотра решений, принятых одним из партнёров. Определите механизм голосования или арбитража, сроки обжалования и исключения, требующие единогласия. Результат: эффективная система сдержек и противовесов в управлении.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 11 -->
+        <div class="card" data-category="management">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-управление</div>
+                    <div class="card-question">Как наказывать за опоздания?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите политику в отношении опозданий для разных категорий сотрудников. Согласуйте систему санкций, допустимые исключения и процедуру контроля. Результат: поддержание дисциплины при сохранении гибкости и уважения к сотрудникам.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 12 -->
+        <div class="card" data-category="management">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-управление</div>
+                    <div class="card-question">Кто ведет финансовую отчетность?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите ответственных за подготовку финансовой отчетности и процедуру ее проверки. Согласуйте периодичность формирования отчетов, уровень детализации и механизмы обеспечения достоверности данных. Результат: достоверная и своевременная финансовая информация для принятия решений.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 13 -->
+        <div class="card" data-category="management">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-управление</div>
+                    <div class="card-question">Можно ли повышать зарплату без обсуждения?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Согласуйте лимиты самостоятельных решений по повышению оплаты труда сотрудников. Определите процедуру согласования значительных повышений и правила периодического пересмотра зарплат. Результат: сбалансированная система управления фондом оплаты труда.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 14 -->
+        <div class="card" data-category="management">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-управление</div>
+                    <div class="card-question">Кто отвечает за провал проекта?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите механизм распределения ответственности за неудачные проекты. Обсудите баланс между персональной ответственностью лидера проекта и коллективной ответственностью команды и руководства. Результат: культура конструктивного анализа неудач и извлечения уроков.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 15 -->
+        <div class="card" data-category="management">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-управление</div>
+                    <div class="card-question">Как часто пересматриваем должностные инструкции?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Согласуйте периодичность и процедуру обновления должностных инструкций сотрудников. Определите ответственных за актуализацию и механизм согласования изменений с самими сотрудниками. Результат: актуальная система распределения ответственности и полномочий в компании.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 16 -->
+        <div class="card" data-category="management">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-управление</div>
+                    <div class="card-question">Можно ли уволить сотрудника без объяснения?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Обсудите политику компании в отношении увольнений. Определите, в каких случаях допустимо увольнение без детального обоснования, какова должна быть компенсация и как это коммуницировать команде. Результат: этичный и юридически защищенный подход к прекращению трудовых отношений.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 17 -->
+        <div class="card" data-category="management">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-управление</div>
+                    <div class="card-question">Кто утверждает график отпусков?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите процедуру планирования и утверждения отпусков сотрудников. Согласуйте лимиты одновременного отсутствия персонала, приоритеты при конфликтах и особые периоды, когда отпуска нежелательны. Результат: справедливая система, обеспечивающая непрерывность бизнес-процессов.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 18 -->
+        <div class="card" data-category="management">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-управление</div>
+                    <div class="card-question">Как распределить зоны ответственности в кризис?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Разработайте матрицу распределения антикризисных ролей между партнёрами. Определите, кто отвечает за внешние коммуникации, оптимизацию расходов, поддержку команды и другие критические направления. Результат: готовность к эффективным скоординированным действиям в кризисной ситуации.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 19 -->
+        <div class="card" data-category="management">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-управление</div>
+                    <div class="card-question">Можно ли требовать отчеты в выходные?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите политику внерабочих коммуникаций в компании. Согласуйте исключительные обстоятельства, оправдывающие запрос работы в выходные, компенсацию за такую работу и механизмы защиты права на отдых. Результат: здоровый баланс между эффективностью и благополучием сотрудников.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 20 -->
+        <div class="card" data-category="management">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-управление</div>
+                    <div class="card-question">Кто решает споры между сотрудниками?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Разработайте процедуру разрешения конфликтов внутри команды. Определите иерархию эскалации, роль HR, возможность привлечения внешних медиаторов и принципы принятия окончательных решений. Результат: здоровая атмосфера в коллективе и конструктивное разрешение разногласий.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 21 -->
+        <div class="card" data-category="management">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-управление</div>
+                    <div class="card-question">Как внедрять новые процессы без согласия?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите баланс между автономией и необходимостью согласования при внедрении новых бизнес-процессов. Установите критерии, когда изменения требуют обязательного коллегиального решения, и санкции за самовольное внедрение значимых изменений. Результат: гибкость инноваций при сохранении системности.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 22 -->
+        <div class="card" data-category="management">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-управление</div>
+                    <div class="card-question">Кто отвечает за переговоры с арендодателем?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите ответственного за критическую инфраструктуру компании. Согласуйте лимиты самостоятельных решений по условиям аренды, процедуру согласования значительных изменений и стратегию переговоров. Результат: профессиональное управление важным ресурсом компании.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 23 -->
+        <div class="card" data-category="management">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-управление</div>
+                    <div class="card-question">Можно ли сократить рабочий день без потерь?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Обсудите возможность и условия перехода на сокращенный рабочий день. Определите критерии оценки эффективности такого решения, необходимые изменения в процессах и ожидания по сохранению производительности. Результат: баланс между эффективностью и комфортом для команды.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 24 -->
+        <div class="card" data-category="management">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-управление</div>
+                    <div class="card-question">Кто утверждает дизайн офиса?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите процедуру принятия решений о физическом пространстве компании. Согласуйте бюджетные лимиты, баланс между функциональностью и эстетикой, а также учет потребностей разных команд. Результат: комфортное рабочее пространство, отражающее ценности компании.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 25 -->
+        <div class="card" data-category="management">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Со-управление</div>
+                    <div class="card-question">Как делить личные рабочие инструменты (ноутбук, телефон)?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Согласуйте политику в отношении рабочего оборудования. Определите, предоставляет ли компания инструменты или компенсирует использование личной техники, лимиты расходов и правила обновления. Результат: прозрачный и справедливый подход к обеспечению команды необходимыми инструментами.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Категория: Пустые карты (10 карточек) -->
+        <!-- Карточка 1 -->
+        <div class="card" data-category="empty">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Пустые карты</div>
+                    <div class="card-question">Какой главный вопрос остался необсужденным?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Используйте этот момент, чтобы поднять важный вопрос, который ещё не обсуждался. Сформулируйте его четко и объясните, почему он критически важен для успеха предприятия. Результат: выявление и обсуждение "слепых зон" в планировании.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 2 -->
+        <div class="card" data-category="empty">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Пустые карты</div>
+                    <div class="card-question">Какой опыт предыдущих проектов стоит учесть в текущем?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Поделитесь релевантным опытом из предыдущих проектов — как успешным, так и неудачным. Обсудите уроки, которые можно применить в текущем проекте. Результат: практические выводы, которые помогут избежать повторения ошибок и усилить успешные практики.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 3 -->
+        <div class="card" data-category="empty">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Пустые карты</div>
+                    <div class="card-question">Какая общая цель объединяет всех партнёров?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Обсудите глубинные мотивы, ценности и цели, которые объединяют всех партнёров в этом бизнесе. Важно выявить действительно общие устремления, а не просто декларируемые. Результат: ясное понимание общего фундамента партнёрства.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 4 -->
+        <div class="card" data-category="empty">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Пустые карты</div>
+                    <div class="card-question">Что для вас служит главной мотивацией в бизнесе?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Откровенно поделитесь вашими главными драйверами в бизнесе — деньги, статус, свобода, самореализация, влияние или что-то другое. Понимание истинных мотивов друг друга поможет выстроить гармоничные отношения. Результат: осознание личных приоритетов каждого партнёра.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 5 -->
+        <div class="card" data-category="empty">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Пустые карты</div>
+                    <div class="card-question">Какие личные страхи влияют на ваши бизнес-решения?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Обсудите личные страхи и опасения, которые могут неосознанно влиять на принимаемые бизнес-решения. Признание этих факторов поможет принимать более объективные и взвешенные решения. Результат: снижение влияния эмоциональных триггеров на стратегические решения.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 6 -->
+        <div class="card" data-category="empty">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Пустые карты</div>
+                    <div class="card-question">Что вы не готовы делать ради успеха бизнеса?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Определите личные границы каждого партнёра — то, через что вы не готовы переступить даже ради успеха компании. Это могут быть этические, семейные или другие ограничения. Результат: взаимное уважение к личным ценностям и границам друг друга.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 7 -->
+        <div class="card" data-category="empty">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Пустые карты</div>
+                    <div class="card-question">Как будем отмечать победы и переживать поражения?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Обсудите ритуалы и традиции, которые помогут команде отмечать достижения и перерабатывать неудачи. Правильные ритуалы укрепляют корпоративную культуру и поддерживают эмоциональное здоровье команды. Результат: здоровый эмоциональный климат и сильная корпоративная культура.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 8 -->
+        <div class="card" data-category="empty">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Пустые карты</div>
+                    <div class="card-question">Какие аспекты бизнеса вызывают у вас наибольший дискомфорт?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Поделитесь, какие стороны вашего бизнеса или роли в нем вызывают у вас наибольший психологический дискомфорт или сопротивление. Осознание этих аспектов поможет оптимизировать распределение ролей. Результат: работа в соответствии с природными склонностями каждого партнёра.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 9 -->
+        <div class="card" data-category="empty">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Пустые карты</div>
+                    <div class="card-question">Что для вас означает "хорошая жизнь"?</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Обсудите, как каждый из партнёров представляет себе "хорошую жизнь" через 5-10 лет. Как бизнес должен помочь в ее достижении? Совместимы ли эти видения между собой? Результат: согласование долгосрочных личных целей партнёров с развитием бизнеса.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 10 -->
+        <div class="card" data-category="empty">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-category">Пустые карты</div>
+                    <div class="card-question">Свой вопрос: [впишите свой вопрос]</div>
+                </div>
+                <div class="card-back">
+                    <div class="card-comment">
+                        <p>Используйте эту карточку для обсуждения любого специфического вопроса, который важен именно для вашего контекста. Сформулируйте вопрос перед началом обсуждения. Результат: ответ на вопрос, критический для вашей конкретной ситуации.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 

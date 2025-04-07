@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  grc-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3000"
+    volumes:
+      # Маппинг для разработки (если нужно)
+      - ./:/usr/src/app
+      # Исключаем node_modules из маппинга
+      - /usr/src/app/node_modules
+      # Том для сохранения данных сессий (если нужен)
+      - grc-data:/usr/src/app/data
+    environment:
+      - NODE_ENV=production
+      - DATA_DIR=/usr/src/app/data
+    restart: unless-stopped
+
+# Определяем именованные тома, которые будут сохраняться между перезапусками
+volumes:
+  grc-data:
+    driver: local 
